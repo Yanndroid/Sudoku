@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemContainer"
+    android:layout_width="match_parent"
+    android:background="?selectableItemBackground"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/dividerTop"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_gravity="top"
+        android:background="@color/divider_color" />
+
+    <View
+        android:id="@+id/dividerBottom"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_gravity="bottom"
+        android:background="@color/divider_color" />
+
+    <View
+        android:id="@+id/dividerRight"
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:background="@color/divider_color" />
+
+    <View
+        android:id="@+id/dividerLeft"
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="@color/divider_color" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/itemNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:textSize="24sp" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

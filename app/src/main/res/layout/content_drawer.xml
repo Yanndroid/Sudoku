@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <de.dlyt.yanndroid.samsung.drawer.OptionGroup
+        android:id="@+id/optionGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:selectedOptionButton="@id/play_sudoku">
+
+        <de.dlyt.yanndroid.samsung.drawer.OptionButton
+            android:id="@+id/play_sudoku"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_samsung_play"
+            app:text="Play Sudoku" />
+
+        <de.dlyt.yanndroid.samsung.drawer.OptionButton
+            android:id="@+id/solve_sudoku"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_samsung_settings"
+            app:text="Solve Sudoku" />
+
+    </de.dlyt.yanndroid.samsung.drawer.OptionGroup>
+
+</LinearLayout>
