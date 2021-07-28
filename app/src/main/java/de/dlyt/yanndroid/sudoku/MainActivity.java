@@ -25,6 +25,13 @@ public class MainActivity extends AppCompatActivity {
             {null, 8, null, 9, 4, null, null, null, 5}
     };
 
+    /*Integer[][] grid = {
+            {1, 2, 3, 4},
+            {3, 4, 1, 2},
+            {4, null, null, null},
+            {null, null, 4, null}
+    };*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.setDrawerIconOnClickListener(v -> startActivity(new Intent().setClass(getApplicationContext(), AboutActivity.class)));
 
         GridView sudokuView = findViewById(R.id.sudokuView);
+        sudokuView.setClipToOutline(true);
+        sudokuView.setNumColumns(grid.length);
         sudokuView.setAdapter(new SudokuAdapter(this, grid));
 
     }

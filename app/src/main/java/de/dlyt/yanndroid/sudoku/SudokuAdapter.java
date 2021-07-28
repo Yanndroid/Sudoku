@@ -2,14 +2,17 @@ package de.dlyt.yanndroid.sudoku;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
@@ -45,24 +48,24 @@ public class SudokuAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         SudokuItem sudokuItem;
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
-        int r = position / 9;
-        int c = position % 9;
+        int r = position / grid.length;
+        int c = position % grid.length;
 
         if (convertView == null) {
-            sudokuItem = new SudokuItem(context, r, c);
+            sudokuItem = new SudokuItem(context, r, c, grid.length);
         } else {
             sudokuItem = (SudokuItem) convertView;
         }
 
         boolean preNumber = grid[r][c] != null;
 
-        sudokuItem.setText(grid[r][c], preNumber);
+        sudokuItem.setNumber(grid[r][c], preNumber);
         if (!preNumber) {
             sudokuItem.setOnClickListener(v -> showPopup(sudokuItem));
             sudokuItem.setOnLongClickListener(v -> {
-                sudokuItem.setText(null, false);
-                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                sudokuItem.setNumber(null, false);
                 vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
                 return true;
             });
@@ -78,14 +81,30 @@ public class SudokuAdapter extends BaseAdapter {
         final PopupWindow popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         popupWindow.setAnimationStyle(R.style.Base_Animation_AppCompat_MenuPopup);
 
-        int[] textViewIDs = {R.id.popupButton1, R.id.popupButton2, R.id.popupButton3, R.id.popupButton4, R.id.popupButton5, R.id.popupButton6, R.id.popupButton7, R.id.popupButton8, R.id.popupButton9};
-        for (int id : textViewIDs) {
-            ((MaterialTextView) popupView.findViewById(id)).setOnClickListener(v -> {
-                view.setText(Integer.valueOf(((MaterialTextView) v).getText().toString()), false);
+        GridLayout popupGrid = popupView.findViewById(R.id.popupGrid);
+        popupGrid.setColumnCount((int) Math.sqrt(grid.length));
+        popupGrid.setRowCount((int) Math.sqrt(grid.length));
+        for (int i = 1; i <= grid.length; i++) {
+            MaterialTextView materialTextView = new MaterialTextView(context);
+
+            materialTextView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            materialTextView.setPadding(24, 4, 24, 4);
+
+            TypedValue outValue = new TypedValue();
+            context.getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, outValue, true);
+            materialTextView.setBackgroundResource(outValue.resourceId);
+
+            materialTextView.setTextSize(24);
+            materialTextView.setTypeface(Typeface.DEFAULT_BOLD);
+
+            materialTextView.setText(String.valueOf(i));
+            materialTextView.setOnClickListener(v -> {
+                view.setNumber(Integer.valueOf(((MaterialTextView) v).getText().toString()), false);
                 popupWindow.dismiss();
             });
-        }
 
+            popupGrid.addView(materialTextView);
+        }
 
         Rect rect = new Rect();
         view.getGlobalVisibleRect(rect);

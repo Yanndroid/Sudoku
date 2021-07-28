@@ -8,30 +8,30 @@
     <View
         android:id="@+id/dividerTop"
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="2px"
         android:layout_gravity="top"
-        android:background="@color/divider_color" />
+        android:background="@color/sudoku_divider_color" />
 
     <View
         android:id="@+id/dividerBottom"
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="2px"
         android:layout_gravity="bottom"
-        android:background="@color/divider_color" />
+        android:background="@color/sudoku_divider_color" />
 
     <View
         android:id="@+id/dividerRight"
-        android:layout_width="1px"
+        android:layout_width="2px"
         android:layout_height="match_parent"
         android:layout_gravity="right"
-        android:background="@color/divider_color" />
+        android:background="@color/sudoku_divider_color" />
 
     <View
         android:id="@+id/dividerLeft"
-        android:layout_width="1px"
+        android:layout_width="2px"
         android:layout_height="match_parent"
         android:layout_gravity="left"
-        android:background="@color/divider_color" />
+        android:background="@color/sudoku_divider_color" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/itemNumber"
