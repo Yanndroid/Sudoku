@@ -1,10 +1,15 @@
 package de.dlyt.yanndroid.sudoku;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
@@ -14,6 +19,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
+import de.dlyt.yanndroid.samsung.ColorPickerDialog;
+import de.dlyt.yanndroid.samsung.ThemeColor;
 import de.dlyt.yanndroid.samsung.layout.ToolbarLayout;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -24,11 +31,15 @@ public class SettingsActivity extends AppCompatActivity {
     private RadioButton dark_mode_card_radio;
     private SwitchMaterial theme_mode_system_switch;
 
+    private View colorCircle;
+    private SharedPreferences spColorTheme;
+
     private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        new ThemeColor(this);
         setContentView(R.layout.activity_settings);
 
         sharedPreferences = getSharedPreferences("settings", Activity.MODE_PRIVATE);
@@ -42,6 +53,10 @@ public class SettingsActivity extends AppCompatActivity {
         dark_mode_card_radio = findViewById(R.id.dark_mode_card_radio);
         theme_mode_system_switch = findViewById(R.id.theme_mode_system_switch);
 
+        colorCircle = findViewById(R.id.colorCircle);
+        spColorTheme = getSharedPreferences("ThemeColor", Context.MODE_PRIVATE);
+        GradientDrawable circleDrawable = (GradientDrawable) ((RippleDrawable) colorCircle.getBackground()).getDrawable(0);
+        circleDrawable.setColor(ColorStateList.valueOf(Color.parseColor("#" + spColorTheme.getString("color", "ff781e"))));
 
         setLayoutToTheme(sharedPreferences.getBoolean("darkMode", false));
         theme_mode_system_switch.setChecked(sharedPreferences.getBoolean("themeSystemSwitch", true));
@@ -85,6 +100,29 @@ public class SettingsActivity extends AppCompatActivity {
         dark_mode_card_radio.setTypeface(night ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
         light_mode_card_radio.setChecked(!night);
         light_mode_card_radio.setTypeface(!night ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
+    }
+
+    public void colorPickerDialog(View view) {
+        ColorPickerDialog mColorPickerDialog;
+        String stringColor = spColorTheme.getString("color", "ff781e");
+        float[] currentColor = new float[3];
+        Color.colorToHSV(Color.parseColor("#" + stringColor), currentColor);
+        mColorPickerDialog = new ColorPickerDialog(this, 2, currentColor);
+        mColorPickerDialog.setColorPickerChangeListener(new ColorPickerDialog.ColorPickerChangedListener() {
+            @Override
+            public void onColorChanged(int i, float[] fArr) {
+                if (!(fArr[0] == currentColor[0] && fArr[1] == currentColor[1] && fArr[2] == currentColor[2])) {
+                    ThemeColor.setColor(SettingsActivity.this, fArr);
+                    MainActivity.colorChanged = true;
+                }
+            }
+
+            @Override
+            public void onViewModeChanged(int i) {
+
+            }
+        });
+        mColorPickerDialog.show();
     }
 
     public void openAboutPage(View view) {

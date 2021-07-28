@@ -6,8 +6,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.button.MaterialButton;
-
 import de.dlyt.yanndroid.samsung.ThemeColor;
 import de.dlyt.yanndroid.samsung.layout.AboutPage;
 import de.dlyt.yanndroid.sudoku.utils.Updater;
@@ -24,7 +22,7 @@ public class AboutActivity extends AppCompatActivity {
         about_page.setUpdateState(AboutPage.UPDATE_AVAILABLE);
 
         about_page.setUpdateButtonOnClickListener(v -> Updater.DownloadAndInstall(getBaseContext(), "https://github.com/Yanndroid/Sudoku/raw/master/app/release/app-release.apk", "Sudoku.apk", "Sudoku Update", "downloading"));
-        ((MaterialButton) findViewById(R.id.about_github)).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Yanndroid/Sudoku"))));
+        findViewById(R.id.about_github).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Yanndroid/Sudoku"))));
 
     }
 }

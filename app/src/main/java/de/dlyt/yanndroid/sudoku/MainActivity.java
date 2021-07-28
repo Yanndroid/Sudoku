@@ -6,9 +6,12 @@ import android.widget.GridView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import de.dlyt.yanndroid.samsung.ThemeColor;
 import de.dlyt.yanndroid.samsung.layout.DrawerLayout;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static boolean colorChanged = false;
 
 
     Integer[][] grid = {
@@ -32,12 +35,16 @@ public class MainActivity extends AppCompatActivity {
             {null, null, 4, null}
     };*/
 
+    private DrawerLayout drawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        new ThemeColor(this);
         setContentView(R.layout.activity_main);
 
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_view);
+
+        drawerLayout = findViewById(R.id.drawer_view);
         setSupportActionBar(drawerLayout.getToolbar());
         drawerLayout.setDrawerIconOnClickListener(v -> startActivity(new Intent().setClass(getApplicationContext(), SettingsActivity.class)));
 
@@ -50,4 +57,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (colorChanged) {
+            colorChanged = false;
+            drawerLayout.setDrawerOpen(false, false);
+            recreate();
+        }
+    }
 }
