@@ -23,7 +23,7 @@
             android:id="@+id/solve_sudoku"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:icon="@drawable/ic_samsung_settings"
+            app:icon="@drawable/ic_samsung_shuffle"
             app:text="Solve Sudoku" />
 
     </de.dlyt.yanndroid.samsung.drawer.OptionGroup>

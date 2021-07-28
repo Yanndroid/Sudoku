@@ -3,7 +3,6 @@
     package="de.dlyt.yanndroid.sudoku">
 
     <uses-permission android:name="android.permission.VIBRATE" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,6 +14,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/SamsungTheme">
+        <activity android:name=".SettingsActivity"></activity>
         <activity
             android:name=".AboutActivity"
             android:theme="@style/SamsungAboutTheme" />
@@ -40,7 +40,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths" />
         </provider>
-
     </application>
 
 </manifest>

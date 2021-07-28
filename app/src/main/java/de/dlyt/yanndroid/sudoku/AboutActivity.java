@@ -1,12 +1,8 @@
 package de.dlyt.yanndroid.sudoku;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.view.View;
-import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,21 +23,8 @@ public class AboutActivity extends AppCompatActivity {
         AboutPage about_page = findViewById(R.id.about_page);
         about_page.setUpdateState(AboutPage.UPDATE_AVAILABLE);
 
-        about_page.setUpdateButtonOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Updater.DownloadAndInstall(getBaseContext(), "https://github.com/Yanndroid/Sudoku/raw/master/app/release/app-release.apk", "Sudoku.apk", "Sudoku Update", "downloading");
-            }
-        });
-
-
+        about_page.setUpdateButtonOnClickListener(v -> Updater.DownloadAndInstall(getBaseContext(), "https://github.com/Yanndroid/Sudoku/raw/master/app/release/app-release.apk", "Sudoku.apk", "Sudoku Update", "downloading"));
         ((MaterialButton) findViewById(R.id.about_github)).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Yanndroid/Sudoku"))));
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
 
     }
 }
