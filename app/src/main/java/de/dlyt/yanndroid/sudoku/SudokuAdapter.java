@@ -88,7 +88,7 @@ public class SudokuAdapter extends BaseAdapter {
             MaterialTextView materialTextView = new MaterialTextView(context);
 
             materialTextView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            materialTextView.setPadding(24, 4, 24, 4);
+            materialTextView.setPadding(28, 4, 28, 4);
 
             TypedValue outValue = new TypedValue();
             context.getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, outValue, true);

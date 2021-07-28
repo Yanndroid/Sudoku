@@ -30,31 +30,78 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="horizontal"
-                        android:paddingTop="20dp">
+                        android:paddingVertical="5dp">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:id="@+id/light_mode_card"
+                            android:layout_width="150dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="40dp"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:src="@drawable/display_theme_light" />
+                            android:background="@drawable/sesl_rounded_background"
+                            android:backgroundTint="@color/item_background_color"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingVertical="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/dark_mode_card"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
+                            <ImageView
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:adjustViewBounds="true"
+                                android:src="@drawable/display_theme_light" />
+
+                            <RadioButton
+                                android:id="@+id/light_mode_card_radio"
+                                style="@style/RadioButtonStyle.Vertical"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:clickable="false"
+                                android:text="Light\n" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/dark_mode_card"
+                            android:layout_width="150dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="40dp"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:src="@drawable/display_theme_dark" />
+                            android:background="@drawable/sesl_rounded_background"
+                            android:backgroundTint="@color/item_background_color"
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingVertical="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/light_mode_card"
+                            app:layout_constraintTop_toTopOf="parent">
 
-                    </LinearLayout>
+                            <ImageView
+                                android:layout_width="120dp"
+                                android:layout_height="wrap_content"
+                                android:adjustViewBounds="true"
+                                android:src="@drawable/display_theme_dark" />
 
+                            <RadioButton
+                                android:id="@+id/dark_mode_card_radio"
+                                style="@style/RadioButtonStyle.Vertical"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:clickable="false"
+                                android:text="Dark\n" />
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -63,6 +110,7 @@
                         android:background="?android:dividerHorizontal" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/theme_mode_system_switch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="26dp"
@@ -108,18 +156,30 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginHorizontal="26dp"
                     android:layout_marginVertical="15dp"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="?textAppearanceBody1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:letterSpacing="0"
-                        android:paddingHorizontal="2dp"
                         android:text="About Sudoku"
                         android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/drawerIcon_badge"
+                        android:layout_width="17dp"
+                        android:layout_height="17dp"
+                        android:background="@drawable/new_badge_bg"
+                        android:gravity="center"
+                        android:text="N"
+                        android:textColor="@color/white"
+                        android:textSize="11dp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 

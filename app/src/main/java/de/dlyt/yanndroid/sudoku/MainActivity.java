@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(drawerLayout.getToolbar());
         drawerLayout.setDrawerIconOnClickListener(v -> startActivity(new Intent().setClass(getApplicationContext(), SettingsActivity.class)));
 
+        drawerLayout.showIconNotification(true, true);
+
         GridView sudokuView = findViewById(R.id.sudokuView);
         sudokuView.setClipToOutline(true);
         sudokuView.setNumColumns(grid.length);
