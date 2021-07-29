@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -15,10 +16,18 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 import de.dlyt.yanndroid.samsung.ColorPickerDialog;
 import de.dlyt.yanndroid.samsung.ThemeColor;
@@ -37,6 +46,8 @@ public class SettingsActivity extends AppCompatActivity {
     private SwitchMaterial grid_color_switch;
 
     private SharedPreferences sharedPreferences;
+    private DatabaseReference mDatabase;
+    private View about_new;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +59,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         ToolbarLayout toolbarLayout = findViewById(R.id.toolbar_layout);
         toolbarLayout.setNavigationOnClickListener(v -> onBackPressed());
+
+        about_new = findViewById(R.id.about_new);
 
         light_mode_card = findViewById(R.id.light_mode_card);
         light_mode_card_radio = findViewById(R.id.light_mode_card_radio);
@@ -95,6 +108,8 @@ public class SettingsActivity extends AppCompatActivity {
             setLayoutToTheme(true);
         });
 
+        checkForUpdate();
+
     }
 
     @Override
@@ -137,4 +152,34 @@ public class SettingsActivity extends AppCompatActivity {
     public void openAboutPage(View view) {
         startActivity(new Intent().setClass(getApplicationContext(), AboutActivity.class));
     }
+
+
+    private void checkForUpdate() {
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Sudoku");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try {
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        hashMap.put(child.getKey(), child.getValue().toString());
+                    }
+
+                    if (Integer.parseInt(hashMap.get("versionCode")) > getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
+                        about_new.setVisibility(View.VISIBLE);
+                    } else {
+                        about_new.setVisibility(View.GONE);
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    about_new.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 }

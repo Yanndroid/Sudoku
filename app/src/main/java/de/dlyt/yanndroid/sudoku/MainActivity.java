@@ -1,10 +1,20 @@
 package de.dlyt.yanndroid.sudoku;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.GridView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 import de.dlyt.yanndroid.samsung.ThemeColor;
 import de.dlyt.yanndroid.samsung.layout.DrawerLayout;
@@ -37,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private GridView sudokuView;
+    private DatabaseReference mDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(drawerLayout.getToolbar());
         drawerLayout.setDrawerIconOnClickListener(v -> startActivity(new Intent().setClass(getApplicationContext(), SettingsActivity.class)));
 
-        drawerLayout.showIconNotification(true, true);
-
 
         sudokuView = findViewById(R.id.sudokuView);
         sudokuView.setClipToOutline(true);
@@ -58,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         sudokuView.setAdapter(new SudokuAdapter(this, grid));
 
+        checkForUpdate();
     }
 
     @Override
@@ -68,9 +79,39 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.setDrawerOpen(false, false);
             recreate();
         }
-        if (gridSettingChanged){
+        if (gridSettingChanged) {
             gridSettingChanged = false;
             sudokuView.setAdapter(new SudokuAdapter(this, grid));
         }
     }
+
+
+    private void checkForUpdate() {
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Sudoku");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                try {
+                    HashMap<String, String> hashMap = new HashMap<>();
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        hashMap.put(child.getKey(), child.getValue().toString());
+                    }
+
+                    if (Integer.parseInt(hashMap.get("versionCode")) > getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
+                        drawerLayout.showIconNotification(true, true);
+                    } else {
+                        drawerLayout.showIconNotification(false, false);
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    drawerLayout.showIconNotification(false, false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 }

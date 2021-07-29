@@ -222,7 +222,7 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/drawerIcon_badge"
+                        android:id="@+id/about_new"
                         android:layout_width="17dp"
                         android:layout_height="17dp"
                         android:background="@drawable/new_badge_bg"
@@ -230,7 +230,8 @@
                         android:text="N"
                         android:textColor="@color/white"
                         android:textSize="11dp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
