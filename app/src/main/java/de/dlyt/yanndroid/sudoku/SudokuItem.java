@@ -1,6 +1,9 @@
 package de.dlyt.yanndroid.sudoku;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +16,12 @@ public class SudokuItem extends LinearLayout {
     private MaterialTextView itemNumber;
     private View itemContainer;
     private int sqrt_size;
+    private SharedPreferences sharedPreferences;
 
     public SudokuItem(Context context, int r, int c, int size) {
         super(context);
+
+        sharedPreferences = context.getSharedPreferences("settings", Activity.MODE_PRIVATE);
 
         this.sqrt_size = (int) Math.sqrt(size);
 
@@ -54,8 +60,10 @@ public class SudokuItem extends LinearLayout {
             dividerLeft.setLayoutParams(paramsLeft);
         }
 
-        if ((r >= sqrt_size && r < sqrt_size * 2) != (c >= sqrt_size && c < sqrt_size * 2)) {
-            itemContainer.setBackgroundColor(getResources().getColor(R.color.sesl_control_color_normal, context.getTheme()));
+        if (sharedPreferences.getBoolean("gridColorSwitch", true)) {
+            if ((r >= sqrt_size && r < sqrt_size * 2) != (c >= sqrt_size && c < sqrt_size * 2)) {
+                itemContainer.setBackgroundColor(getResources().getColor(R.color.sesl_control_color_normal, context.getTheme()));
+            }
         }
 
 
@@ -69,8 +77,11 @@ public class SudokuItem extends LinearLayout {
 
     public void setNumber(Integer n, boolean isPreNumber) {
         itemNumber.setText(n == null ? null : String.valueOf(n));
-        if (isPreNumber)
-            itemNumber.setTextColor(getResources().getColor(R.color.primary_color, getContext().getTheme()));
+        if (isPreNumber) {
+            TypedValue typedValue = new TypedValue();
+            getContext().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+            itemNumber.setTextColor(typedValue.data);
+        }
     }
 
 }

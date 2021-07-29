@@ -113,8 +113,8 @@
                         android:id="@+id/theme_mode_system_switch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="26dp"
-                        android:layout_marginVertical="15dp"
+                        android:paddingHorizontal="26dp"
+                        android:paddingVertical="15dp"
                         android:text="Match System"
                         android:textAlignment="viewStart" />
 
@@ -129,47 +129,68 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="colorPickerDialog">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:layout_marginVertical="15dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:background="?selectableItemBackground"
+                        android:gravity="center"
+                        android:onClick="colorPickerDialog"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="24dp"
+                        android:paddingVertical="15dp">
 
-                        <com.google.android.material.textview.MaterialTextView
-                            style="?textAppearanceBody1"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:letterSpacing="0"
-                            android:text="Theme Color"
-                            android:textSize="18sp" />
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                        <com.google.android.material.textview.MaterialTextView
-                            style="?android:attr/textAppearanceSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Change the app color."
-                            android:textAlignment="viewStart" />
+                            <com.google.android.material.textview.MaterialTextView
+                                style="?textAppearanceBody1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:letterSpacing="0"
+                                android:text="Theme Color"
+                                android:textSize="18sp" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="?android:attr/textAppearanceSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Change the app color."
+                                android:textAlignment="viewStart" />
+                        </LinearLayout>
+
+
+                        <View
+                            android:id="@+id/colorCircle"
+                            android:layout_width="42.0dip"
+                            android:layout_height="42.0dip"
+                            android:background="@drawable/color_picker_recent_color_circle" />
+
                     </LinearLayout>
 
-
                     <View
-                        android:id="@+id/colorCircle"
-                        android:layout_width="42.0dip"
-                        android:layout_height="42.0dip"
-                        android:background="@drawable/color_picker_recent_color_circle" />
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="24dp"
+                        android:background="?android:dividerHorizontal" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/grid_color_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="26dp"
+                        android:paddingVertical="15dp"
+                        android:text="Grid Box colors"
+                        android:textAlignment="viewStart" />
 
                 </LinearLayout>
 
@@ -179,18 +200,17 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="openAboutPage">
+                android:layout_marginTop="15dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="26dp"
-                    android:layout_marginVertical="15dp"
+                    android:background="?selectableItemBackground"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:onClick="openAboutPage"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="26dp"
+                    android:paddingVertical="15dp">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="?textAppearanceBody1"

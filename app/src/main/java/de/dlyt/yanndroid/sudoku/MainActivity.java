@@ -11,8 +11,8 @@ import de.dlyt.yanndroid.samsung.layout.DrawerLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static boolean colorChanged = false;
-
+    public static boolean colorSettingChanged = false;
+    public static boolean gridSettingChanged = false;
 
     Integer[][] grid = {
             {null, null, null, null, null, 7, null, 3, null},
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     };*/
 
     private DrawerLayout drawerLayout;
+    private GridView sudokuView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +51,11 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout.showIconNotification(true, true);
 
-        GridView sudokuView = findViewById(R.id.sudokuView);
+
+        sudokuView = findViewById(R.id.sudokuView);
         sudokuView.setClipToOutline(true);
         sudokuView.setNumColumns(grid.length);
+
         sudokuView.setAdapter(new SudokuAdapter(this, grid));
 
     }
@@ -60,10 +63,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (colorChanged) {
-            colorChanged = false;
+        if (colorSettingChanged) {
+            colorSettingChanged = false;
             drawerLayout.setDrawerOpen(false, false);
             recreate();
+        }
+        if (gridSettingChanged){
+            gridSettingChanged = false;
+            sudokuView.setAdapter(new SudokuAdapter(this, grid));
         }
     }
 }

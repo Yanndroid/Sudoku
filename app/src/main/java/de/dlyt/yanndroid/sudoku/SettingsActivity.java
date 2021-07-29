@@ -12,6 +12,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private View colorCircle;
     private SharedPreferences spColorTheme;
+    private SwitchMaterial grid_color_switch;
 
     private SharedPreferences sharedPreferences;
 
@@ -53,10 +55,17 @@ public class SettingsActivity extends AppCompatActivity {
         dark_mode_card_radio = findViewById(R.id.dark_mode_card_radio);
         theme_mode_system_switch = findViewById(R.id.theme_mode_system_switch);
 
+        grid_color_switch = findViewById(R.id.grid_color_switch);
         colorCircle = findViewById(R.id.colorCircle);
         spColorTheme = getSharedPreferences("ThemeColor", Context.MODE_PRIVATE);
         GradientDrawable circleDrawable = (GradientDrawable) ((RippleDrawable) colorCircle.getBackground()).getDrawable(0);
-        circleDrawable.setColor(ColorStateList.valueOf(Color.parseColor("#" + spColorTheme.getString("color", "ff781e"))));
+        circleDrawable.setColor(ColorStateList.valueOf(Color.parseColor("#" + spColorTheme.getString("color", "15b76d"))));
+
+        grid_color_switch.setChecked(sharedPreferences.getBoolean("gridColorSwitch", true));
+        grid_color_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            MainActivity.gridSettingChanged = true;
+            sharedPreferences.edit().putBoolean("gridColorSwitch", isChecked).apply();
+        });
 
         setLayoutToTheme(sharedPreferences.getBoolean("darkMode", false));
         theme_mode_system_switch.setChecked(sharedPreferences.getBoolean("themeSystemSwitch", true));
@@ -104,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void colorPickerDialog(View view) {
         ColorPickerDialog mColorPickerDialog;
-        String stringColor = spColorTheme.getString("color", "ff781e");
+        String stringColor = spColorTheme.getString("color", "15b76d");
         float[] currentColor = new float[3];
         Color.colorToHSV(Color.parseColor("#" + stringColor), currentColor);
         mColorPickerDialog = new ColorPickerDialog(this, 2, currentColor);
@@ -113,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onColorChanged(int i, float[] fArr) {
                 if (!(fArr[0] == currentColor[0] && fArr[1] == currentColor[1] && fArr[2] == currentColor[2])) {
                     ThemeColor.setColor(SettingsActivity.this, fArr);
-                    MainActivity.colorChanged = true;
+                    MainActivity.colorSettingChanged = true;
                 }
             }
 

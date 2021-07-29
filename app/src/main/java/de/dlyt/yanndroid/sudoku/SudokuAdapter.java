@@ -24,10 +24,15 @@ public class SudokuAdapter extends BaseAdapter {
 
     private Context context;
     private Integer[][] grid;
+    private boolean locked;
 
     public SudokuAdapter(Context context, Integer[][] grid) {
+        this(context, grid, false);
+    }
+    public SudokuAdapter(Context context, Integer[][] grid, boolean locked) {
         this.context = context;
         this.grid = grid;
+        this.locked = locked;
     }
 
     @Override
@@ -62,7 +67,7 @@ public class SudokuAdapter extends BaseAdapter {
         boolean preNumber = grid[r][c] != null;
 
         sudokuItem.setNumber(grid[r][c], preNumber);
-        if (!preNumber) {
+        if (!preNumber && !locked) {
             sudokuItem.setOnClickListener(v -> showPopup(sudokuItem));
             sudokuItem.setOnLongClickListener(v -> {
                 sudokuItem.setNumber(null, false);
