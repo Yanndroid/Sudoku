@@ -9,6 +9,6 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/about_github"
         style="@style/ButtonStyle.AboutPage"
-        android:text="Github" />
+        android:text="@string/github" />
 
 </de.dlyt.yanndroid.samsung.layout.AboutPage>

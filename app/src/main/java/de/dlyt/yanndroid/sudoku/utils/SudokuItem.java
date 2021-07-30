@@ -1,4 +1,4 @@
-package de.dlyt.yanndroid.sudoku;
+package de.dlyt.yanndroid.sudoku.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.google.android.material.textview.MaterialTextView;
+
+import de.dlyt.yanndroid.sudoku.R;
 
 public class SudokuItem extends LinearLayout {
 
@@ -39,14 +41,14 @@ public class SudokuItem extends LinearLayout {
             dividerTop.setLayoutParams(paramsTop);
         }
 
-        if (r % sqrt_size == 2) {
+        if ((r + 1) % sqrt_size == 0) {
             View dividerBottom = findViewById(R.id.dividerBottom);
             ViewGroup.LayoutParams paramsBottom = dividerBottom.getLayoutParams();
             paramsBottom.height = 4;
             dividerBottom.setLayoutParams(paramsBottom);
         }
 
-        if (c % sqrt_size == 2) {
+        if ((c + 1) % sqrt_size == 0) {
             View dividerRight = findViewById(R.id.dividerRight);
             ViewGroup.LayoutParams paramsRight = dividerRight.getLayoutParams();
             paramsRight.width = 4;
@@ -61,11 +63,12 @@ public class SudokuItem extends LinearLayout {
         }
 
         if (sharedPreferences.getBoolean("gridColorSwitch", true)) {
-            if ((r >= sqrt_size && r < sqrt_size * 2) != (c >= sqrt_size && c < sqrt_size * 2)) {
+            int rm = r % (sqrt_size * 2);
+            int cm = c % (sqrt_size * 2);
+            if ((rm >= sqrt_size && rm < sqrt_size * 2) != (cm >= sqrt_size && cm < sqrt_size * 2)) {
                 itemContainer.setBackgroundColor(getResources().getColor(R.color.sesl_control_color_normal, context.getTheme()));
             }
         }
-
 
     }
 

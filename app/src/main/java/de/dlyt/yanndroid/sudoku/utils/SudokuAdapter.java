@@ -1,4 +1,4 @@
-package de.dlyt.yanndroid.sudoku;
+package de.dlyt.yanndroid.sudoku.utils;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -18,36 +18,34 @@ import android.widget.PopupWindow;
 
 import com.google.android.material.textview.MaterialTextView;
 
+import de.dlyt.yanndroid.sudoku.R;
+
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class SudokuAdapter extends BaseAdapter {
 
     private Context context;
     private Integer[][] grid;
+    private boolean[][] preNumbers;
     private boolean locked;
 
-    public SudokuAdapter(Context context, Integer[][] grid) {
-        this(context, grid, false);
+    public SudokuAdapter(Context context, Game game) {
+        this(context, game.getGrid(), game.getPreNumbers(), false);
     }
-    public SudokuAdapter(Context context, Integer[][] grid, boolean locked) {
+
+    public SudokuAdapter(Context context, Integer[][] grid, boolean[][] preNumbers) {
+        this(context, grid, preNumbers, false);
+    }
+
+    public SudokuAdapter(Context context, Integer[][] grid, boolean[][] preNumbers, boolean locked) {
         this.context = context;
         this.grid = grid;
+        this.preNumbers = preNumbers;
         this.locked = locked;
     }
 
-    @Override
-    public int getCount() {
-        return grid.length * grid.length;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
+    public SudokuAdapter getNew() {
+        return new SudokuAdapter(context, grid, preNumbers, locked);
     }
 
     @Override
@@ -64,13 +62,14 @@ public class SudokuAdapter extends BaseAdapter {
             sudokuItem = (SudokuItem) convertView;
         }
 
-        boolean preNumber = grid[r][c] != null;
+        boolean preNumber = preNumbers[r][c];
 
         sudokuItem.setNumber(grid[r][c], preNumber);
         if (!preNumber && !locked) {
-            sudokuItem.setOnClickListener(v -> showPopup(sudokuItem));
+            sudokuItem.setOnClickListener(v -> showPopup(sudokuItem, r, c));
             sudokuItem.setOnLongClickListener(v -> {
                 sudokuItem.setNumber(null, false);
+                grid[r][c] = null;
                 vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
                 return true;
             });
@@ -80,7 +79,7 @@ public class SudokuAdapter extends BaseAdapter {
     }
 
 
-    public void showPopup(SudokuItem view) {
+    private void showPopup(SudokuItem view, int row, int column) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup_window, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
@@ -104,7 +103,9 @@ public class SudokuAdapter extends BaseAdapter {
 
             materialTextView.setText(String.valueOf(i));
             materialTextView.setOnClickListener(v -> {
-                view.setNumber(Integer.valueOf(((MaterialTextView) v).getText().toString()), false);
+                Integer value = Integer.valueOf(((MaterialTextView) v).getText().toString());
+                view.setNumber(value, false);
+                grid[row][column] = value;
                 popupWindow.dismiss();
             });
 
@@ -124,6 +125,22 @@ public class SudokuAdapter extends BaseAdapter {
         wmlp.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         wmlp.dimAmount = 0.3f;
         ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).updateViewLayout(container, wmlp);
+    }
+
+
+    @Override
+    public int getCount() {
+        return grid.length * grid.length;
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return null;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
 }

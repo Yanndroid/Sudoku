@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Sudoku</string>
+
+    <string name="elapsed_time">Elapsed time: %1$s</string>
+    <string name="github">Github</string>
+    <string name="theme">Theme</string>
+    <string name="light_n">Light\n</string>
+    <string name="dark_n">Dark\n</string>
+    <string name="system_default">System default</string>
+    <string name="color">Color</string>
+    <string name="theme_color">Theme Color</string>
+    <string name="theme_color_summary">Change the app color.</string>
+    <string name="grid_box_colors">Grid Box colors</string>
+    <string name="about_sudoku">About Sudoku</string>
+    <string name="solutions">Solutions</string>
 </resources>

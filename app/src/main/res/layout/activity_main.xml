@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     app:drawer_icon="@drawable/ic_samsung_settings"
     app:drawer_viewId="@id/viewInDrawer"
-    app:toolbar_subtitle="Time: 0"
     app:toolbar_title="@string/app_name"
     tools:context=".MainActivity">
 
@@ -22,20 +21,6 @@
          android:background="@drawable/sudoku_background"
          android:nestedScrollingEnabled="true"
          android:scrollbars="none" />
-
-
-    <!--<GridView
-        android:id="@+id/sudokuView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/item_background_color"
-        android:foreground="@drawable/rounded_corner"
-        android:foregroundTint="@color/background_color"
-        android:nestedScrollingEnabled="true"
-        android:numColumns="9"
-        android:paddingHorizontal="15dp"
-        android:paddingVertical="15dp"
-        android:scrollbars="none" />-->
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

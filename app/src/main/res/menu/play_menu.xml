@@ -1,0 +1,34 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="de.dlyt.yanndroid.movies.AppInfoActivity">
+
+    <item
+        android:id="@+id/play"
+        android:icon="@drawable/ic_samsung_play"
+        android:title="Play"
+        android:visible="true"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/pause"
+        android:icon="@drawable/ic_samsung_pause"
+        android:title="Pause"
+        android:visible="true"
+        app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/showSolutions"
+        android:icon="@drawable/ic_samsung_move"
+        android:title="@string/solutions"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/save"
+        android:icon="@drawable/ic_samsung_move"
+        android:title="Save"
+        app:showAsAction="never" />
+
+
+</menu>

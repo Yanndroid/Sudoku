@@ -19,7 +19,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/SubHeaderStyle"
-                android:text="Theme" />
+                android:text="@string/theme" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -65,7 +65,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@null"
                                 android:clickable="false"
-                                android:text="Light\n" />
+                                android:text="@string/light_n" />
 
                         </LinearLayout>
 
@@ -97,7 +97,7 @@
                                 android:layout_height="wrap_content"
                                 android:background="@null"
                                 android:clickable="false"
-                                android:text="Dark\n" />
+                                android:text="@string/dark_n" />
 
                         </LinearLayout>
 
@@ -115,7 +115,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="26dp"
                         android:paddingVertical="15dp"
-                        android:text="Match System"
+                        android:text="@string/system_default"
                         android:textAlignment="viewStart" />
 
                 </LinearLayout>
@@ -125,7 +125,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/SubHeaderStyle"
                 android:layout_marginTop="15dp"
-                android:text="Color" />
+                android:text="@string/color" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -157,14 +157,14 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:letterSpacing="0"
-                                android:text="Theme Color"
+                                android:text="@string/theme_color"
                                 android:textSize="18sp" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="?android:attr/textAppearanceSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Change the app color."
+                                android:text="@string/theme_color_summary"
                                 android:textAlignment="viewStart" />
                         </LinearLayout>
 
@@ -189,7 +189,7 @@
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="26dp"
                         android:paddingVertical="15dp"
-                        android:text="Grid Box colors"
+                        android:text="@string/grid_box_colors"
                         android:textAlignment="viewStart" />
 
                 </LinearLayout>
@@ -218,7 +218,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:letterSpacing="0"
-                        android:text="About Sudoku"
+                        android:text="@string/about_sudoku"
                         android:textSize="18sp" />
 
                     <TextView
