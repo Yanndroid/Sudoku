@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Sudoku</string>
 
-    <string name="elapsed_time">Elapsed time: %1$s</string>
+    <!--Settings-->
     <string name="github">Github</string>
     <string name="theme">Theme</string>
     <string name="light_n">Light\n</string>
@@ -12,8 +12,24 @@
     <string name="theme_color_summary">Change the app color.</string>
     <string name="grid_box_colors">Grid Box colors</string>
     <string name="about_sudoku">About Sudoku</string>
+
+    <string name="elapsed_time">Elapsed time: %1$s</string>
+
+    <string name="copy">copy</string>
+    <string name="solver">Solver</string>
     <string name="solve">Solve</string>
     <string name="clear">Clear</string>
     <string name="save">Save</string>
     <string name="pause">Pause</string>
+    <string name="sudoku_size">Sudoku size</string>
+    <string name="name">Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
+    <string name="play_sudoku">Play Sudoku</string>
+    <string name="solve_sudoku">Solve Sudoku</string>
+    <string name="new_sudoku">New Sudoku</string>
+    <string name="delete_sudoku">Delete this Sudoku?</string>
+    <string name="found_100_plus_soultion">Found 100+ Solutions</string>
+
 </resources>

@@ -17,14 +17,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:icon="@drawable/ic_samsung_play"
-            app:text="Play Sudoku" />
+            app:text="@string/play_sudoku" />
 
         <de.dlyt.yanndroid.samsung.drawer.OptionButton
             android:id="@+id/solve_sudoku"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:icon="@drawable/ic_samsung_unlock"
-            app:text="Solve Sudoku" />
+            app:text="@string/solve_sudoku" />
 
     </de.dlyt.yanndroid.samsung.drawer.OptionGroup>
 
@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:text="New Sudoku"
+                android:text="@string/new_sudoku"
                 android:textAlignment="viewStart"
                 android:textSize="18dp" />
 
@@ -65,6 +65,13 @@
 
 
     </com.google.android.material.card.MaterialCardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/games_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="26dp"
+        android:scrollbars="vertical" />
 
 
 </LinearLayout>

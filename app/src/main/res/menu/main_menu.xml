@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.dlyt.yanndroid.movies.AppInfoActivity">
 
-    <group
-        android:id="@+id/play_group"
-        android:visible="true">
+    <group android:id="@+id/play_group">
 
         <item
             android:id="@+id/pause"

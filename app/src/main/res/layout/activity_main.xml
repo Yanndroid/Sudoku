@@ -14,13 +14,13 @@
         android:id="@+id/viewInDrawer"
         layout="@layout/content_drawer" />
 
-     <GridView
-         android:id="@+id/sudokuView"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:background="@drawable/sudoku_background"
-         android:nestedScrollingEnabled="true"
-         android:scrollbars="none" />
+    <GridView
+        android:id="@+id/sudokuView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/sudoku_background"
+        android:nestedScrollingEnabled="true"
+        android:scrollbars="none" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

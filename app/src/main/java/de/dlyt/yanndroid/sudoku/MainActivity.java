@@ -16,9 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,9 +35,10 @@ import java.util.HashMap;
 import de.dlyt.yanndroid.samsung.ThemeColor;
 import de.dlyt.yanndroid.samsung.drawer.OptionGroup;
 import de.dlyt.yanndroid.samsung.layout.DrawerLayout;
+import de.dlyt.yanndroid.sudoku.adapter.GamesAdapter;
+import de.dlyt.yanndroid.sudoku.adapter.SudokuAdapter;
 import de.dlyt.yanndroid.sudoku.utils.Game;
 import de.dlyt.yanndroid.sudoku.utils.GameArrayList;
-import de.dlyt.yanndroid.sudoku.utils.SudokuAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
     private Game currentGame;
     private Integer[][] currentGrid;
 
+    private RecyclerView games_recycler;
+    private GamesAdapter gamesAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_view);
         setSupportActionBar(drawerLayout.getToolbar());
         drawerLayout.setDrawerIconOnClickListener(v -> startActivity(new Intent().setClass(getApplicationContext(), SettingsActivity.class)));
+
 
         mLoadingDialog = new Dialog(context, R.style.LargeProgressDialog);
         mLoadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -81,9 +89,15 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.setDrawerOpen(false, true);
             switch (i) {
                 case R.id.play_sudoku:
-                    loadGame(games.get(0));
+                    loadGame(sharedPreferences.getInt("lastGame", 0));
                     break;
                 case R.id.solve_sudoku:
+                    drawerLayout.setToolbarTitle(getString(R.string.app_name));
+                    drawerLayout.setToolbarSubtitle(getString(R.string.solver));
+                    drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.play_group, false);
+                    currentGame = null;
+                    sudokuAdapter = null;
+                    sudokuView.setAdapter(sudokuAdapter);
                     loadSolver();
                     break;
             }
@@ -96,19 +110,60 @@ public class MainActivity extends AppCompatActivity {
         if (games.isEmpty()) {
             newSudoku(null);
         } else {
-            loadGame(games.get(games.size() - 1));
+            loadGame(sharedPreferences.getInt("lastGame", 0));
+        }
+
+        games_recycler = findViewById(R.id.games_recycler);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setReverseLayout(true);
+        games_recycler.setLayoutManager(linearLayoutManager);
+        gamesAdapter = new GamesAdapter(context, games);
+        games_recycler.setAdapter(gamesAdapter);
+
+    }
+
+    public void onDeleteGame(Game delGame) {
+        if (delGame == currentGame) {
+            sudokuAdapter = null;
+            sudokuView.setAdapter(sudokuAdapter);
+            drawerLayout.setToolbarTitle(getString(R.string.app_name));
+            drawerLayout.setToolbarSubtitle(null);
+            drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.play_group, false);
+        }
+        if (games.isEmpty()) {
+            drawerLayout.setDrawerOpen(false, true);
+            newSudoku(null);
+        }
+
+    }
+
+    public void onNameChange(Game reGame, String name) {
+        if (reGame == currentGame) {
+            drawerLayout.setToolbarTitle(name);
         }
     }
 
+    public void loadGame(int index) {
+        if (!(index < games.size())) {
+            loadGame(games.size() - 1);
+            return;
+        }
+        optionGroup.setSelectedOptionButton(findViewById(R.id.play_sudoku));
+        drawerLayout.setDrawerOpen(false, true);
+        Game game = games.get(index);
+        sharedPreferences.edit().putInt("lastGame", index).apply();
 
-    private void loadGame(Game game) {
+        drawerLayout.setToolbarTitle(game.getName());
         drawerLayout.setToolbarSubtitle(context.getResources().getString(R.string.elapsed_time, String.valueOf(game.getTime())));
         drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.play_group, true);
         drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.solve_group, false);
 
-        sudokuView.setNumColumns(game.getLength());
-        sudokuAdapter = new SudokuAdapter(context, game);
-        sudokuView.setAdapter(sudokuAdapter);
+        if (currentGame != game) {
+            sudokuView.setNumColumns(game.getLength());
+            sudokuAdapter = new SudokuAdapter(context, game);
+            sudokuView.setAdapter(sudokuAdapter);
+        }
 
         currentGame = game;
         currentGrid = null;
@@ -117,10 +172,8 @@ public class MainActivity extends AppCompatActivity {
     private void loadSolver() {
         CharSequence[] charSequences = {"4 x 4", "9 x 9", "16 x 16"};
         new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle))
-                .setTitle("Sudoku size")
+                .setTitle(R.string.sudoku_size)
                 .setSingleChoiceItems(charSequences, -1, (dialog, which) -> {
-                    drawerLayout.setToolbarSubtitle("Solver");
-                    drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.play_group, false);
                     drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.solve_group, true);
 
                     int length = 9;
@@ -144,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
                     sudokuAdapter = new SudokuAdapter(context, grid, preNumbers);
                     sudokuView.setAdapter(sudokuAdapter);
                     currentGrid = grid;
-                    currentGame = null;
                     dialog.dismiss();
                 })
                 .show();
@@ -156,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 
         CharSequence[] charSequences = {"4 x 4", "9 x 9"};
         new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle))
-                .setTitle("Sudoku size")
+                .setTitle(R.string.new_sudoku)
                 .setCancelable(!games.isEmpty())
                 .setSingleChoiceItems(charSequences, -1, (dialog, which) -> {
 
@@ -183,7 +235,8 @@ public class MainActivity extends AppCompatActivity {
                             runOnUiThread(() -> {
                                 mLoadingDialog.dismiss();
                                 games.add(game);
-                                loadGame(game);
+                                gamesAdapter.notifyDataSetChanged();
+                                loadGame(games.size() - 1);
                             });
                         }
                     }.execute(length);
@@ -285,13 +338,18 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.save:
-                games.add(new Gson().fromJson(new Gson().toJson(currentGame), Game.class));
+                Game saveGame = new Gson().fromJson(new Gson().toJson(currentGame), Game.class);
+                saveGame.setName(currentGame.getName() + " " + getString(R.string.copy));
+                games.add(saveGame);
+                gamesAdapter.notifyDataSetChanged();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void showSolution() {
+        if (currentGame.getSolutions().size() > 100)
+            Toast.makeText(context, R.string.found_100_plus_soultion, Toast.LENGTH_SHORT).show();
         sudokuAdapter = new SudokuAdapter(context, currentGame.getSolutions().get(0), currentGame.getPreNumbers(), true);
         sudokuView.setAdapter(sudokuAdapter);
     }

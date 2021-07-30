@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:foreground="@drawable/rounded_corner"
+    android:foregroundTint="@color/item_background_color"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingHorizontal="30dp"
+    android:paddingVertical="14dp">
+
+    <ImageView
+        android:id="@+id/item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_samsung_time"
+        app:tint="@color/drawer_icon_color" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/item_text"
+        style="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="marquee"
+        android:paddingStart="15dp"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textSize="18dp" />
+
+    <ImageView
+        android:id="@+id/item_rename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_samsung_rename"
+        app:tint="@color/drawer_icon_color" />
+
+    <ImageView
+        android:id="@+id/item_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_samsung_delete"
+        app:tint="@color/drawer_icon_color" />
+
+
+</LinearLayout>

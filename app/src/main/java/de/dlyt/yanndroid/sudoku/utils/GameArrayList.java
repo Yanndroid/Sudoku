@@ -25,4 +25,8 @@ public class GameArrayList {
         return games.isEmpty();
     }
 
+    public void remove(int index) {
+        games.remove(index);
+    }
+
 }

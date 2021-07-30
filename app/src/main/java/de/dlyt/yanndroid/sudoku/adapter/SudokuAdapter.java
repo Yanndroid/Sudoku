@@ -1,4 +1,4 @@
-package de.dlyt.yanndroid.sudoku.utils;
+package de.dlyt.yanndroid.sudoku.adapter;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -19,6 +19,7 @@ import android.widget.PopupWindow;
 import com.google.android.material.textview.MaterialTextView;
 
 import de.dlyt.yanndroid.sudoku.R;
+import de.dlyt.yanndroid.sudoku.utils.Game;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 

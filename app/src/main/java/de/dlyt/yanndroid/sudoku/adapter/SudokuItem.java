@@ -1,4 +1,4 @@
-package de.dlyt.yanndroid.sudoku.utils;
+package de.dlyt.yanndroid.sudoku.adapter;
 
 import android.app.Activity;
 import android.content.Context;

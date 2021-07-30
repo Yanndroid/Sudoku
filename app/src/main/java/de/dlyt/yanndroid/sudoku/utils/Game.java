@@ -13,10 +13,11 @@ public class Game {
     private int length;
     private int size;
 
-    private String name = "New Sudoku";
+    private String name = "Sudoku";
     private int time = 0;
 
     private Integer tries;
+    private Boolean creating;
 
     public Game(Integer[][] grid) {
         this.grid = grid;
@@ -76,6 +77,13 @@ public class Game {
         return time;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     private Integer[][] clone(Integer[][] intArr) {
         return Arrays.stream(intArr).map(Integer[]::clone).toArray(Integer[][]::new);
@@ -83,6 +91,7 @@ public class Game {
 
     /*Solving*/
     private void solveField(Integer[][] tmpGrid, int row, int column) {
+        if (creating == null && solutions.size() > 100) return;
         if (column == tmpGrid.length) {
             column = 0;
             row++;
@@ -123,7 +132,9 @@ public class Game {
 
 
         for (int i = 0; i < (Math.pow(length, 2)) / 3; i++) addRandomNumber();
+        creating = true;
         solveField(clone(grid), 0, 0);
+        creating = null;
         if (solutions.isEmpty()) {
             createSudoku(length);
             return;
