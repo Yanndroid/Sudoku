@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.save:
-                games.add(currentGame);
+                games.add(new Gson().fromJson(new Gson().toJson(currentGame), Game.class));
                 break;
         }
         return super.onOptionsItemSelected(item);

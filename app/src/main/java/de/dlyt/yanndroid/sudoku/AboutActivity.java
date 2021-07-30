@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +33,7 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
 
         AboutPage about_page = findViewById(R.id.about_page);
+        MaterialButton about_github = findViewById(R.id.about_github);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Sudoku");
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -48,6 +51,11 @@ public class AboutActivity extends AppCompatActivity {
                     } else {
                         about_page.setUpdateState(AboutPage.NO_UPDATE);
                     }
+
+                    about_github.setVisibility(View.VISIBLE);
+                    about_github.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(hashMap.get("github")))));
+
+
                 } catch (PackageManager.NameNotFoundException e) {
                     about_page.setUpdateState(AboutPage.NO_UPDATE);
                 }
@@ -58,8 +66,5 @@ public class AboutActivity extends AppCompatActivity {
 
             }
         });
-
-        findViewById(R.id.about_github).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Yanndroid/Sudoku"))));
-
     }
 }
