@@ -3,7 +3,7 @@
     android:shape="rectangle">
     <stroke
         android:width="4px"
-        android:color="@color/sudoku_divider_color" />
+        android:color="@color/item_divider_color" />
     <corners android:radius="26dp" />
     <solid android:color="@color/item_background_color" />
 </shape>

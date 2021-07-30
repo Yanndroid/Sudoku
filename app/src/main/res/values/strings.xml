@@ -12,5 +12,8 @@
     <string name="theme_color_summary">Change the app color.</string>
     <string name="grid_box_colors">Grid Box colors</string>
     <string name="about_sudoku">About Sudoku</string>
-    <string name="solutions">Solutions</string>
+    <string name="solve">Solve</string>
+    <string name="clear">Clear</string>
+    <string name="save">Save</string>
+    <string name="pause">Pause</string>
 </resources>

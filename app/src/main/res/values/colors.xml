@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<color name="primary_color">#ffff781e</color>
-    <color name="secondary_color">#ffff8c32</color>
-    <color name="primary_dark_color">#ffeb640a</color>-->
 
     <color name="primary_color">#ff15b76d</color>
     <color name="secondary_color">#ff0bc26e</color>
     <color name="primary_dark_color">#ff109e5d</color>
 
-    <color name="sudoku_divider_color">#ff979797</color>
 </resources>

@@ -23,9 +23,48 @@
             android:id="@+id/solve_sudoku"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:icon="@drawable/ic_samsung_shuffle"
+            app:icon="@drawable/ic_samsung_unlock"
             app:text="Solve Sudoku" />
 
     </de.dlyt.yanndroid.samsung.drawer.OptionGroup>
+
+    <View style="@style/DrawerDividerStyle" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/newSudoku"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/transparent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:gravity="center_vertical|left"
+            android:onClick="newSudoku"
+            android:orientation="horizontal"
+            android:paddingHorizontal="30dp"
+            android:paddingVertical="14dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_samsung_plus"
+                app:tint="@color/green" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="?android:attr/textAppearanceLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:text="New Sudoku"
+                android:textAlignment="viewStart"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
 
 </LinearLayout>

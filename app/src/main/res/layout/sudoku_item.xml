@@ -2,43 +2,47 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/itemContainer"
     android:layout_width="match_parent"
-    android:background="?selectableItemBackground"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?selectableItemBackground">
 
     <View
         android:id="@+id/dividerTop"
         android:layout_width="match_parent"
         android:layout_height="2px"
         android:layout_gravity="top"
-        android:background="@color/sudoku_divider_color" />
+        android:background="@color/item_divider_color" />
 
     <View
         android:id="@+id/dividerBottom"
         android:layout_width="match_parent"
         android:layout_height="2px"
         android:layout_gravity="bottom"
-        android:background="@color/sudoku_divider_color" />
+        android:background="@color/item_divider_color" />
 
     <View
         android:id="@+id/dividerRight"
         android:layout_width="2px"
         android:layout_height="match_parent"
         android:layout_gravity="right"
-        android:background="@color/sudoku_divider_color" />
+        android:background="@color/item_divider_color" />
 
     <View
         android:id="@+id/dividerLeft"
         android:layout_width="2px"
         android:layout_height="match_parent"
         android:layout_gravity="left"
-        android:background="@color/sudoku_divider_color" />
+        android:background="@color/item_divider_color" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/itemNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:textStyle="bold"
-        android:textSize="24sp" />
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="10sp"
+        android:autoSizeStepGranularity="1sp"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:textStyle="bold" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
