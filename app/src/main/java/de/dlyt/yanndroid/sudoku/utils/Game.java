@@ -1,10 +1,11 @@
 package de.dlyt.yanndroid.sudoku.utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Game {
+public class Game implements Serializable {
 
     private Integer[][] grid;
     private ArrayList<Integer[][]> solutions;

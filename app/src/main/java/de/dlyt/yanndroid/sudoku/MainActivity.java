@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_view);
         setSupportActionBar(drawerLayout.getToolbar());
-        drawerLayout.setDrawerIconOnClickListener(v -> startActivity(new Intent().setClass(getApplicationContext(), SettingsActivity.class)));
+        drawerLayout.setDrawerIconOnClickListener(v -> startActivity(new Intent().setClass(context, SettingsActivity.class)));
 
 
         mLoadingDialog = new Dialog(context, R.style.LargeProgressDialog);
@@ -348,10 +347,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSolution() {
-        if (currentGame.getSolutions().size() > 100)
-            Toast.makeText(context, R.string.found_100_plus_soultion, Toast.LENGTH_SHORT).show();
-        sudokuAdapter = new SudokuAdapter(context, currentGame.getSolutions().get(0), currentGame.getPreNumbers(), true);
-        sudokuView.setAdapter(sudokuAdapter);
+        /*sudokuAdapter = new SudokuAdapter(context, currentGame.getSolutions().get(0), currentGame.getPreNumbers(), true);
+        sudokuView.setAdapter(sudokuAdapter);*/
+        Intent intent = new Intent().setClass(context, SolutionsActivity.class);
+        intent.putExtra("game", currentGame);
+        startActivity(intent);
     }
 
 }

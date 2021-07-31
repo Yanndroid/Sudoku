@@ -31,5 +31,6 @@
     <string name="new_sudoku">New Sudoku</string>
     <string name="delete_sudoku">Delete this Sudoku?</string>
     <string name="found_100_plus_soultion">Found 100+ Solutions</string>
+    <string name="solutions">Solutions</string>
 
 </resources>
