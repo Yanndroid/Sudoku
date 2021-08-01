@@ -37,6 +37,7 @@
         android:layout_marginHorizontal="5dp"
         android:background="?selectableItemBackgroundBorderless"
         android:src="@drawable/ic_samsung_rename"
+        android:tooltipText="@string/rename"
         app:tint="@color/drawer_icon_color" />
 
     <ImageView
@@ -46,6 +47,7 @@
         android:layout_marginHorizontal="5dp"
         android:background="?selectableItemBackgroundBorderless"
         android:src="@drawable/ic_samsung_delete"
+        android:tooltipText="@string/delete"
         app:tint="@color/drawer_icon_color" />
 
 

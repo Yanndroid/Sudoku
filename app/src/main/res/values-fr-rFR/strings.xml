@@ -31,5 +31,10 @@
     <string name="solver">Solveur</string>
     <string name="dismiss">Fermer</string>
     <string name="sudoku_done">Terminé</string>
+    <string name="time">Temps: %1$s</string>
+    <string name="resume">Reprendre</string>
+    <string name="no_solutions">Pas de solutions</string>
+    <string name="how_to_play">Comment jouer</string>
+    <string name="how_to_play_summary">Cliquez sur une case pour ajouter un chiffre et cliquez longtemps pour l\'enlever. Chaque ligne, colonne et rectangle ne peut contenir un chiffre qu\'une seule fois.</string>
 
 </resources>

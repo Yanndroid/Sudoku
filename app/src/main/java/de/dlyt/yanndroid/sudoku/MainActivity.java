@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -133,6 +134,14 @@ public class MainActivity extends AppCompatActivity {
         gamesAdapter = new GamesAdapter(context, games);
         games_recycler.setAdapter(gamesAdapter);
 
+        if (sharedPreferences.getBoolean("firstTime", true)) {
+            new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.DialogStyle))
+                    .setTitle(R.string.how_to_play)
+                    .setMessage(R.string.how_to_play_summary)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.dismiss, (dialog, which) -> sharedPreferences.edit().putBoolean("firstTime", false).apply())
+                    .show();
+        }
 
     }
 
@@ -186,7 +195,10 @@ public class MainActivity extends AppCompatActivity {
             timer.start();
             hide_layout.setVisibility(View.GONE);
             MenuItem menuItem = menu.findItem(R.id.pause);
-            if (menuItem != null) menuItem.setIcon(R.drawable.ic_samsung_pause);
+            if (menuItem != null) {
+                menuItem.setIcon(R.drawable.ic_samsung_pause);
+                menuItem.setTooltipText(getString(R.string.pause));
+            }
         }
     }
 
@@ -206,7 +218,10 @@ public class MainActivity extends AppCompatActivity {
 
         hide_layout.setVisibility(View.GONE);
         MenuItem menuItem = menu.findItem(R.id.pause);
-        if (menuItem != null) menuItem.setIcon(R.drawable.ic_samsung_pause);
+        if (menuItem != null) {
+            menuItem.setIcon(R.drawable.ic_samsung_pause);
+            menuItem.setTooltipText(getString(R.string.pause));
+        }
 
         if (currentGame != game) {
             stopTimer();
@@ -379,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             mLoadingDialog.dismiss();
                             showSolution();
+                            currentGame = null;
                         });
                         super.onPostExecute(unused);
                     }
@@ -398,9 +414,9 @@ public class MainActivity extends AppCompatActivity {
                     hide_layout.setVisibility(View.VISIBLE);
                     stopTimer();
                     item.setIcon(R.drawable.ic_samsung_play);
+                    item.setTooltipText(getString(R.string.resume));
                 } else {
                     startTimer();
-                    item.setIcon(R.drawable.ic_samsung_pause);
                 }
 
                 break;
@@ -416,9 +432,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSolution() {
-        Intent intent = new Intent().setClass(context, SolutionsActivity.class);
-        intent.putExtra("game", currentGame);
-        startActivity(intent);
+        if (currentGame.getSolutions().isEmpty()) {
+            Toast.makeText(context, getString(R.string.no_solutions), Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent().setClass(context, SolutionsActivity.class);
+            intent.putExtra("game", currentGame);
+            startActivity(intent);
+        }
     }
 
 }

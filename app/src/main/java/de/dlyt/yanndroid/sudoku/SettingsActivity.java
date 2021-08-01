@@ -1,6 +1,7 @@
 package de.dlyt.yanndroid.sudoku;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.RadioButton;
 
@@ -48,11 +50,14 @@ public class SettingsActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private View about_new;
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         new ThemeColor(this);
         setContentView(R.layout.activity_settings);
+        context = this;
 
         sharedPreferences = getSharedPreferences("settings", Activity.MODE_PRIVATE);
 
@@ -152,6 +157,13 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(new Intent().setClass(getApplicationContext(), AboutActivity.class));
     }
 
+    public void howToPlay(View view) {
+        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.DialogStyle))
+                .setTitle(R.string.how_to_play)
+                .setMessage(R.string.how_to_play_summary)
+                .setPositiveButton(R.string.dismiss, null)
+                .show();
+    }
 
     private void checkForUpdate() {
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Sudoku");
