@@ -40,8 +40,11 @@ public class GamesAdapter extends RecyclerView.Adapter<GamesAdapter.ViewHolder> 
         final Game game = data.get(position);
 
         holder.item_text.setText(game.getName());
-        if (game.isFinished())
+        if (game.isFinished()) {
             holder.item_icon.setImageDrawable(context.getDrawable(de.dlyt.yanndroid.samsung.R.drawable.ic_samsung_selected));
+        } else {
+            holder.item_icon.setImageDrawable(context.getDrawable(de.dlyt.yanndroid.samsung.R.drawable.ic_samsung_time));
+        }
 
         holder.item_rename.setOnClickListener(v -> {
 
