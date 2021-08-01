@@ -1,8 +1,10 @@
 package de.dlyt.yanndroid.sudoku.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.TypedValue;
@@ -18,6 +20,7 @@ import android.widget.PopupWindow;
 
 import com.google.android.material.textview.MaterialTextView;
 
+import de.dlyt.yanndroid.sudoku.MainActivity;
 import de.dlyt.yanndroid.sudoku.R;
 import de.dlyt.yanndroid.sudoku.utils.Game;
 
@@ -29,9 +32,11 @@ public class SudokuAdapter extends BaseAdapter {
     private Integer[][] grid;
     private boolean[][] preNumbers;
     private boolean locked;
+    private Game game;
 
     public SudokuAdapter(Context context, Game game) {
         this(context, game.getGrid(), game.getPreNumbers(), false);
+        this.game = game;
     }
 
     public SudokuAdapter(Context context, Integer[][] grid, boolean[][] preNumbers) {
@@ -76,7 +81,48 @@ public class SudokuAdapter extends BaseAdapter {
             });
         }
 
+
         return sudokuItem;
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
+    private void onSetNumber() {
+        if (game != null) {
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    for (Integer[] row : grid) {
+                        for (Integer field : row) {
+                            if (field == null) return null;
+                        }
+                    }
+
+                    boolean correct = true;
+                    for (Integer[][] solution : game.getSolutions()) {
+                        correct = true;
+                        for (int i = 0; i < grid.length; i++) {
+                            for (int j = 0; j < grid.length; j++) {
+                                if (grid[i][j] != solution[i][j]) {
+                                    correct = false;
+                                    break;
+                                }
+                            }
+                            if (!correct) break;
+                        }
+                        if (correct) break;
+                    }
+
+                    if (correct) {
+                        ((MainActivity) context).runOnUiThread(() -> ((MainActivity) context).onGameFinished());
+                    } else {
+                        //wrong
+                    }
+
+                    return null;
+                }
+            }.execute();
+        }
     }
 
 
@@ -107,6 +153,7 @@ public class SudokuAdapter extends BaseAdapter {
                 Integer value = Integer.valueOf(((MaterialTextView) v).getText().toString());
                 view.setNumber(value, false);
                 grid[row][column] = value;
+                onSetNumber();
                 popupWindow.dismiss();
             });
 

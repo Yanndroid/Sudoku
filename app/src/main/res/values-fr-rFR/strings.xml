@@ -29,5 +29,7 @@
     <string name="theme_color_summary">Change la couleur de l\'application</string>
     <string name="grid_box_colors">Couleurs dans la grille</string>
     <string name="solver">Solveur</string>
+    <string name="dismiss">Fermer</string>
+    <string name="sudoku_done">Terminé</string>
 
 </resources>

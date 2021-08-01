@@ -16,6 +16,7 @@ public class Game implements Serializable {
 
     private String name = "Sudoku";
     private int time = 0;
+    private boolean finished = false;
 
     private Integer tries;
     private Boolean creating;
@@ -80,6 +81,14 @@ public class Game implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 
     public void setName(String name) {

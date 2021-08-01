@@ -33,5 +33,7 @@
     <string name="found_100_plus_soultion">Found 100+ Solutions</string>
     <string name="solutions">Solutions</string>
     <string name="solution">Solution</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="sudoku_done">Done</string>
 
 </resources>

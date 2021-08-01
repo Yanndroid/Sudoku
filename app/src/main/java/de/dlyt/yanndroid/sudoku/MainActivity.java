@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private OptionGroup optionGroup;
+    private Menu menu;
     private Dialog mLoadingDialog;
 
     private Context context;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_view);
         setSupportActionBar(drawerLayout.getToolbar());
         drawerLayout.setDrawerIconOnClickListener(v -> startActivity(new Intent().setClass(context, SettingsActivity.class)));
-
+        menu = drawerLayout.getToolbar().getMenu();
 
         mLoadingDialog = new Dialog(context, R.style.LargeProgressDialog);
         mLoadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.solve_sudoku:
                     drawerLayout.setToolbarTitle(getString(R.string.app_name));
                     drawerLayout.setToolbarSubtitle(getString(R.string.solver));
-                    drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.play_group, false);
+                    menu.setGroupVisible(R.id.play_group, false);
                     currentGame = null;
                     sudokuAdapter = null;
                     sudokuView.setAdapter(sudokuAdapter);
@@ -128,13 +129,25 @@ public class MainActivity extends AppCompatActivity {
             sudokuView.setAdapter(sudokuAdapter);
             drawerLayout.setToolbarTitle(getString(R.string.app_name));
             drawerLayout.setToolbarSubtitle(null);
-            drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.play_group, false);
+            menu.setGroupVisible(R.id.play_group, false);
         }
         if (games.isEmpty()) {
             drawerLayout.setDrawerOpen(false, true);
             newSudoku(null);
         }
 
+    }
+
+    public void onGameFinished() {
+        currentGame.setFinished(true);
+        gamesAdapter.notifyDataSetChanged();
+        menu.setGroupVisible(R.id.play_group, false);
+        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.DialogStyle))
+                .setTitle(R.string.sudoku_done)
+                .setMessage(context.getString(R.string.elapsed_time, String.valueOf(currentGame.getTime())))
+                .setPositiveButton(R.string.new_sudoku, (dialog, which) -> ((MainActivity) context).newSudoku(null))
+                .setNegativeButton(R.string.dismiss, null)
+                .show();
     }
 
     public void onNameChange(Game reGame, String name) {
@@ -155,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout.setToolbarTitle(game.getName());
         drawerLayout.setToolbarSubtitle(context.getResources().getString(R.string.elapsed_time, String.valueOf(game.getTime())));
-        drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.play_group, true);
-        drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.solve_group, false);
+        menu.setGroupVisible(R.id.play_group, !game.isFinished());
+        menu.setGroupVisible(R.id.solve_group, false);
 
         if (currentGame != game) {
             sudokuView.setNumColumns(game.getLength());
@@ -173,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle))
                 .setTitle(R.string.sudoku_size)
                 .setSingleChoiceItems(charSequences, -1, (dialog, which) -> {
-                    drawerLayout.getToolbar().getMenu().setGroupVisible(R.id.solve_group, true);
+                    menu.setGroupVisible(R.id.solve_group, true);
 
                     int length = 9;
                     switch (which) {
@@ -298,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        menu.setGroupVisible(R.id.play_group, !currentGame.isFinished());
         return true;
     }
 
