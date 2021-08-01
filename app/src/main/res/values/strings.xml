@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Sudoku</string>
+    <string name="app_name" translatable="false">Sudoku</string>
 
     <!--Settings-->
-    <string name="github">Github</string>
+    <string name="github" translatable="false">Github</string>
     <string name="theme">Theme</string>
     <string name="light_n">Light\n</string>
     <string name="dark_n">Dark\n</string>
@@ -32,5 +32,6 @@
     <string name="delete_sudoku">Delete this Sudoku?</string>
     <string name="found_100_plus_soultion">Found 100+ Solutions</string>
     <string name="solutions">Solutions</string>
+    <string name="solution">Solution</string>
 
 </resources>

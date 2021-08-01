@@ -347,8 +347,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSolution() {
-        /*sudokuAdapter = new SudokuAdapter(context, currentGame.getSolutions().get(0), currentGame.getPreNumbers(), true);
-        sudokuView.setAdapter(sudokuAdapter);*/
         Intent intent = new Intent().setClass(context, SolutionsActivity.class);
         intent.putExtra("game", currentGame);
         startActivity(intent);

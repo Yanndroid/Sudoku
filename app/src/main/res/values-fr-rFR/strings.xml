@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="solution">Solution</string>
+    <string name="solutions">Solutions</string>
+    <string name="delete_sudoku">Supprimer ce Sudoku?</string>
+    <string name="new_sudoku">Nouveaux Sudoku</string>
+    <string name="delete">Supprimer</string>
+    <string name="rename">Renommer</string>
+    <string name="cancel">Annuler</string>
+    <string name="name">Nom</string>
+    <string name="sudoku_size">Taille du Sudoku</string>
+    <string name="pause">Pause</string>
+    <string name="save">Sauvegarder</string>
+    <string name="clear">Nettoyer</string>
+    <string name="solve">Résoudre</string>
+    <string name="play_sudoku">Jouer au Sudoku</string>
+    <string name="solve_sudoku">Résoudre un Sudoku</string>
+    <string name="found_100_plus_soultion">100+ solutions trouvées</string>
+    <string name="copy">copie</string>
+    <string name="elapsed_time">Temps écoulé: %1$s</string>
+    <string name="about_sudoku">À propos de Sudoku</string>
+    <string name="dark_n">Sombre\n</string>
+    <string name="light_n">Clair\n</string>
+    <string name="theme">Thème</string>
+    <string name="color">Couleur</string>
+    <string name="theme_color">Couleur du thème</string>
+    <string name="system_default">Système</string>
+    <string name="theme_color_summary">Change la couleur de l\'application</string>
+    <string name="grid_box_colors">Couleurs dans la grille</string>
+    <string name="solver">Solveur</string>
+
+</resources>

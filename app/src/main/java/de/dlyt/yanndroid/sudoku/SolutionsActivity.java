@@ -34,16 +34,16 @@ public class SolutionsActivity extends AppCompatActivity {
 
         switch (solutions.size()) {
             case 1:
-                toolbarLayout.setTitle("Solution");
+                toolbarLayout.setTitle(getString(R.string.solution));
                 toolbarLayout.setSubtitle(null);
                 break;
             case 101:
-                toolbarLayout.setTitle("Solutions");
+                toolbarLayout.setTitle(getString(R.string.solutions));
                 toolbarLayout.setSubtitle("100+");
                 Toast.makeText(context, R.string.found_100_plus_soultion, Toast.LENGTH_SHORT).show();
                 break;
             default:
-                toolbarLayout.setTitle("Solutions");
+                toolbarLayout.setTitle(getString(R.string.solutions));
                 toolbarLayout.setSubtitle(String.valueOf(solutions.size()));
         }
 
