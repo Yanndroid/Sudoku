@@ -35,7 +35,7 @@ public class SudokuAdapter extends BaseAdapter {
     private Game game;
 
     public SudokuAdapter(Context context, Game game) {
-        this(context, game.getGrid(), game.getPreNumbers(), false);
+        this(context, game.getGrid(), game.getPreNumbers(), game.isFinished());
         this.game = game;
     }
 

@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,6 +39,7 @@ import de.dlyt.yanndroid.sudoku.adapter.GamesAdapter;
 import de.dlyt.yanndroid.sudoku.adapter.SudokuAdapter;
 import de.dlyt.yanndroid.sudoku.utils.Game;
 import de.dlyt.yanndroid.sudoku.utils.GameArrayList;
+import de.dlyt.yanndroid.sudoku.utils.Timer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
     private OptionGroup optionGroup;
     private Menu menu;
     private Dialog mLoadingDialog;
+
+    private Timer timer;
+    private View hide_layout;
+    private MaterialButton resume_button;
 
     private Context context;
     private SharedPreferences sharedPreferences;
@@ -95,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     drawerLayout.setToolbarTitle(getString(R.string.app_name));
                     drawerLayout.setToolbarSubtitle(getString(R.string.solver));
                     menu.setGroupVisible(R.id.play_group, false);
+                    stopTimer();
                     currentGame = null;
                     sudokuAdapter = null;
                     sudokuView.setAdapter(sudokuAdapter);
@@ -105,6 +112,11 @@ public class MainActivity extends AppCompatActivity {
 
         checkForUpdate();
 
+        hide_layout = findViewById(R.id.hide_layout);
+        resume_button = findViewById(R.id.resume_button);
+        resume_button.setOnClickListener(v -> startTimer());
+        timer = new Timer();
+        timer.setOnTimeChanged(time -> drawerLayout.setToolbarSubtitle(getString(R.string.elapsed_time, timer.getTimeString())));
 
         games = new Gson().fromJson(sharedPreferences.getString("Games", "{}"), GameArrayList.class);
         if (games.isEmpty()) {
@@ -121,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         gamesAdapter = new GamesAdapter(context, games);
         games_recycler.setAdapter(gamesAdapter);
 
+
     }
 
     public void onDeleteGame(Game delGame) {
@@ -130,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.setToolbarTitle(getString(R.string.app_name));
             drawerLayout.setToolbarSubtitle(null);
             menu.setGroupVisible(R.id.play_group, false);
+            currentGame = null;
+            stopTimer();
         }
         if (games.isEmpty()) {
             drawerLayout.setDrawerOpen(false, true);
@@ -139,20 +154,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onGameFinished() {
+        stopTimer();
         currentGame.setFinished(true);
         gamesAdapter.notifyDataSetChanged();
         menu.setGroupVisible(R.id.play_group, false);
+        drawerLayout.setToolbarSubtitle(getString(R.string.time, new Timer().timeToString(currentGame.getTime())));
         new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.DialogStyle))
                 .setTitle(R.string.sudoku_done)
-                .setMessage(context.getString(R.string.elapsed_time, String.valueOf(currentGame.getTime())))
+                .setMessage(context.getString(R.string.time, timer.getTimeString()))
                 .setPositiveButton(R.string.new_sudoku, (dialog, which) -> ((MainActivity) context).newSudoku(null))
                 .setNegativeButton(R.string.dismiss, null)
                 .show();
+        sudokuAdapter = new SudokuAdapter(context, currentGame);
+        sudokuView.setAdapter(sudokuAdapter);
     }
 
     public void onNameChange(Game reGame, String name) {
         if (reGame == currentGame) {
             drawerLayout.setToolbarTitle(name);
+        }
+    }
+
+    private void stopTimer() {
+        if (timer != null) timer.stop();
+        if (currentGame != null)
+            if (!currentGame.isFinished()) currentGame.setTime(timer.getTime());
+    }
+
+    private void startTimer() {
+        if (timer != null && currentGame != null) if (!currentGame.isFinished()) {
+            timer.start();
+            hide_layout.setVisibility(View.GONE);
+            MenuItem menuItem = menu.findItem(R.id.pause);
+            if (menuItem != null) menuItem.setIcon(R.drawable.ic_samsung_pause);
         }
     }
 
@@ -167,11 +201,21 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences.edit().putInt("lastGame", index).apply();
 
         drawerLayout.setToolbarTitle(game.getName());
-        drawerLayout.setToolbarSubtitle(context.getResources().getString(R.string.elapsed_time, String.valueOf(game.getTime())));
         menu.setGroupVisible(R.id.play_group, !game.isFinished());
         menu.setGroupVisible(R.id.solve_group, false);
 
+        hide_layout.setVisibility(View.GONE);
+        MenuItem menuItem = menu.findItem(R.id.pause);
+        if (menuItem != null) menuItem.setIcon(R.drawable.ic_samsung_pause);
+
         if (currentGame != game) {
+            stopTimer();
+            if (!game.isFinished()) {
+                timer.setTime(game.getTime());
+                timer.start();
+            } else {
+                drawerLayout.setToolbarSubtitle(getString(R.string.time, new Timer().timeToString(game.getTime())));
+            }
             sudokuView.setNumColumns(game.getLength());
             sudokuAdapter = new SudokuAdapter(context, game);
             sudokuView.setAdapter(sudokuAdapter);
@@ -261,6 +305,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        stopTimer();
         sharedPreferences.edit().putString("Games", new Gson().toJson(games)).apply();
     }
 
@@ -268,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        startTimer();
         if (colorSettingChanged) {
             colorSettingChanged = false;
             drawerLayout.setDrawerOpen(false, false);
@@ -311,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        menu.setGroupVisible(R.id.play_group, !currentGame.isFinished());
+        if (currentGame != null) menu.setGroupVisible(R.id.play_group, !currentGame.isFinished());
         return true;
     }
 
@@ -348,6 +394,15 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.pause:
+                if (hide_layout.getVisibility() == View.GONE) {
+                    hide_layout.setVisibility(View.VISIBLE);
+                    stopTimer();
+                    item.setIcon(R.drawable.ic_samsung_play);
+                } else {
+                    startTimer();
+                    item.setIcon(R.drawable.ic_samsung_pause);
+                }
+
                 break;
 
             case R.id.save:

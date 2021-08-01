@@ -15,7 +15,7 @@ public class Game implements Serializable {
     private int size;
 
     private String name = "Sudoku";
-    private int time = 0;
+    private long time = 0;
     private boolean finished = false;
 
     private Integer tries;
@@ -75,7 +75,7 @@ public class Game implements Serializable {
         return length;
     }
 
-    public int getTime() {
+    public long getTime() {
         return time;
     }
 
@@ -93,6 +93,10 @@ public class Game implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 
     private Integer[][] clone(Integer[][] intArr) {
