@@ -47,7 +47,7 @@ public class AboutActivity extends AppCompatActivity {
 
                     if (Integer.parseInt(hashMap.get("versionCode")) > getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
                         about_page.setUpdateState(AboutPage.UPDATE_AVAILABLE);
-                        about_page.setUpdateButtonOnClickListener(v -> Updater.DownloadAndInstall(getBaseContext(), hashMap.get("url"), hashMap.get("name") + "_" + hashMap.get("versionName") + ".apk", hashMap.get("name") + " Update", hashMap.get("versionName")));
+                        about_page.setUpdateButtonOnClickListener(v -> Updater.DownloadAndInstall(getBaseContext(), hashMap.get("apk"), hashMap.get("name") + "_" + hashMap.get("versionName") + ".apk", hashMap.get("name") + " Update", hashMap.get("versionName")));
                     } else {
                         about_page.setUpdateState(AboutPage.NO_UPDATE);
                     }
