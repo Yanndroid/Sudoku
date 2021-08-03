@@ -33,9 +33,9 @@ import com.google.gson.Gson;
 
 import java.util.HashMap;
 
-import de.dlyt.yanndroid.samsung.ThemeColor;
-import de.dlyt.yanndroid.samsung.drawer.OptionGroup;
-import de.dlyt.yanndroid.samsung.layout.DrawerLayout;
+import de.dlyt.yanndroid.oneui.ThemeColor;
+import de.dlyt.yanndroid.oneui.drawer.OptionGroup;
+import de.dlyt.yanndroid.oneui.layout.DrawerLayout;
 import de.dlyt.yanndroid.sudoku.adapter.GamesAdapter;
 import de.dlyt.yanndroid.sudoku.adapter.SudokuAdapter;
 import de.dlyt.yanndroid.sudoku.utils.Game;

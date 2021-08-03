@@ -11,7 +11,7 @@ import android.view.animation.Animation;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import de.dlyt.yanndroid.samsung.layout.SplashViewAnimated;
+import de.dlyt.yanndroid.oneui.layout.SplashViewAnimated;
 
 public class SplashActivity extends AppCompatActivity {
 

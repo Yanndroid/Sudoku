@@ -18,8 +18,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
-import de.dlyt.yanndroid.samsung.ThemeColor;
-import de.dlyt.yanndroid.samsung.layout.AboutPage;
+import de.dlyt.yanndroid.oneui.ThemeColor;
+import de.dlyt.yanndroid.oneui.layout.AboutPage;
 import de.dlyt.yanndroid.sudoku.utils.Updater;
 
 public class AboutActivity extends AppCompatActivity {

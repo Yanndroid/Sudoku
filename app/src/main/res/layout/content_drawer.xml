@@ -6,27 +6,27 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <de.dlyt.yanndroid.samsung.drawer.OptionGroup
+    <de.dlyt.yanndroid.oneui.drawer.OptionGroup
         android:id="@+id/optionGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:selectedOptionButton="@id/play_sudoku">
 
-        <de.dlyt.yanndroid.samsung.drawer.OptionButton
+        <de.dlyt.yanndroid.oneui.drawer.OptionButton
             android:id="@+id/play_sudoku"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:icon="@drawable/ic_samsung_play"
             app:text="@string/play_sudoku" />
 
-        <de.dlyt.yanndroid.samsung.drawer.OptionButton
+        <de.dlyt.yanndroid.oneui.drawer.OptionButton
             android:id="@+id/solve_sudoku"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:icon="@drawable/ic_samsung_unlock"
             app:text="@string/solve_sudoku" />
 
-    </de.dlyt.yanndroid.samsung.drawer.OptionGroup>
+    </de.dlyt.yanndroid.oneui.drawer.OptionGroup>
 
     <View style="@style/DrawerDividerStyle" />
 

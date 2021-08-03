@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import de.dlyt.yanndroid.samsung.layout.ToolbarLayout;
+import de.dlyt.yanndroid.oneui.layout.ToolbarLayout;
 import de.dlyt.yanndroid.sudoku.adapter.SolutionAdapter;
 import de.dlyt.yanndroid.sudoku.utils.Game;
 
