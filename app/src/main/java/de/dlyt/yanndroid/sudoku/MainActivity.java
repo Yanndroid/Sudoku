@@ -422,6 +422,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.save:
+                currentGame.setTime(timer.getTime());
                 Game saveGame = new Gson().fromJson(new Gson().toJson(currentGame), Game.class);
                 saveGame.setName(currentGame.getName() + " " + getString(R.string.copy));
                 games.add(saveGame);
