@@ -1,44 +1,109 @@
 <resources>
     <string name="app_name" translatable="false">Sudoku</string>
 
-    <!--Settings-->
+    <!--firebase-->
+    <string name="firebase_childName" translatable="false">Sudoku</string>
+    <string name="firebase_versionCode" translatable="false">versionCode</string>
+    <string name="firebase_github" translatable="false">github</string>
+    <string name="firebase_versionName" translatable="false">versionName</string>
+    <string name="firebase_apk" translatable="false">apk</string>
     <string name="github" translatable="false">Github</string>
+
+    <!--Settings-->
     <string name="theme">Theme</string>
-    <string name="light_n">Light\n</string>
-    <string name="dark_n">Dark\n</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
     <string name="system_default">System default</string>
-    <string name="color">Color</string>
     <string name="theme_color">Theme Color</string>
     <string name="theme_color_summary">Change the app color.</string>
+
+    <string name="general">General</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="keep_screen_on_summary">Keep screen on while playing.</string>
+
+    <string name="appearance">Appearance</string>
     <string name="grid_box_colors">Grid box colors</string>
+    <string name="grid_box_colors_summary">Turn the color of the boxes on or off.</string>
+    <string name="invert_colors">Invert colors</string>
+    <string name="invert_colors_summary">Invert the color of the predefined and user added numbers.</string>
+    <string name="hint_color">Hint number color</string>
+    <string name="hint_color_summary">Change the color of hint numbers.</string>
+    <string name="error_color">Error background color</string>
+    <string name="error_color_summary">Change the color of error fields.</string>
+
+    <string name="dev_options">Developer options</string>
+    <string name="secure_flag">Secure Flag</string>
+    <string name="secure_flag_summary">Block Screenshots and hide screen in recent Apps.</string>
+
+    <string name="how_to_play">How to play</string>
+    <string name="how_to_play_summary">Tap a field to add or remove the number and notes, or get the solution for this field. You can also long click it to clear the number. Each row, column and square can only contain a number once.</string>
+    <string name="restore_all_settings">Restore all settings</string>
     <string name="about_sudoku">About Sudoku</string>
 
-    <string name="elapsed_time">Elapsed time: %1$s</string>
-    <string name="time">Time: %1$s</string>
-
-    <string name="copy">copy</string>
-    <string name="solver">Solver</string>
-    <string name="solve">Solve</string>
+    <!--Game menu-->
+    <string name="undo">Undo</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="solution">Solution</string>
+    <string name="share">Share</string>
     <string name="clear">Clear</string>
     <string name="save">Save</string>
-    <string name="pause">Pause</string>
-    <string name="sudoku_size">Sudoku size</string>
-    <string name="name">Name</string>
-    <string name="cancel">Cancel</string>
-    <string name="rename">Rename</string>
-    <string name="delete">Delete</string>
+
+    <string name="notes">Notes</string>
+    <string name="hint">Hint</string>
+    <string name="remove">Remove</string>
+
+    <string name="initial_game">Initial Game</string>
+    <string name="current_game">Current Game</string>
+    <string name="share_sudoku">Share Sudoku</string>
+
+    <!--Drawer-->
     <string name="play_sudoku">Play Sudoku</string>
     <string name="solve_sudoku">Solve Sudoku</string>
     <string name="new_sudoku">New Sudoku</string>
-    <string name="delete_sudoku">Delete this Sudoku?</string>
-    <string name="found_100_plus_soultion">Found 100+ solutions</string>
-    <string name="solutions">Solutions</string>
-    <string name="solution">Solution</string>
+
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
+    <string name="delete_sudoku">Delete this Game?</string>
+
+    <!--Dialog-->
+    <string name="generate">Generate</string>
+    <string name="make_own">Make Own</string>
+    <string name="_import">Import</string>
+    <string name="easy">Easy</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="pick">Pick</string>
+
+    <string name="completed_no_error_title">Finished</string>
+    <string name="completed_error_title">Completed with Errors</string>
+    <string name="completed_error_message">You filled the game, but there are errors.</string>
     <string name="dismiss">Dismiss</string>
-    <string name="sudoku_done">Done</string>
-    <string name="resume">Resume</string>
-    <string name="no_solutions">No solutions</string>
-    <string name="how_to_play">How to play</string>
-    <string name="how_to_play_summary">Click a field to add a number, long click it to remove it. Each row, column and square can only contain a number once.</string>
+    <string name="show_errors">Show Errors</string>
+
+    <string name="name">Name</string>
+    <string name="time">Time</string>
+    <string name="size">Size</string>
+    <string name="difficulty">Difficulty</string>
+
+    <!--Main Activity-->
+    <string name="elapsed_time">Elapsed time: %1$s</string>
+    <string name="current_time">Time: %1$s</string>
+
+    <!--Others-->
+    <string name="select_file">Select File</string>
+    <string name="successfully_imported">Successfully imported %s</string>
+    <string name="failed_to_import_game">Failed to Import Game</string>
+
+    <string name="error">Error</string>
+    <string name="invalid_game">Invalid Game</string>
+
+    <string name="no_solution">No solution</string>
+    <string name="multiple_solutions">Multiple solutions</string>
+    <string name="game_added_to_list">Game added to list</string>
+
+    <string name="_copy">" copy"</string>
+    <string name="_dev">" Dev"</string>
 
 </resources>

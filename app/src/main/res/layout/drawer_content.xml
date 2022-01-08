@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    app:layout_location="drawer_panel">
+
+    <de.dlyt.yanndroid.oneui.view.OptionGroup
+        android:id="@+id/optionGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:selectedOptionButton="@id/play_sudoku">
+
+        <de.dlyt.yanndroid.oneui.view.OptionButton
+            android:id="@+id/play_sudoku"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_samsung_game"
+            app:text="@string/play_sudoku" />
+
+        <de.dlyt.yanndroid.oneui.view.OptionButton
+            android:id="@+id/solve_sudoku"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_samsung_unlock"
+            app:text="@string/solve_sudoku" />
+
+    </de.dlyt.yanndroid.oneui.view.OptionGroup>
+
+    <View style="@style/DrawerDividerStyle" />
+
+    <de.dlyt.yanndroid.oneui.view.OptionButton
+        android:id="@+id/newSudoku"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="newSudokuDialog"
+        app:icon="@drawable/ic_samsung_plus"
+        app:text="@string/new_sudoku" />
+
+    <de.dlyt.yanndroid.oneui.view.RecyclerView
+        android:id="@+id/games_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
+
+</LinearLayout>

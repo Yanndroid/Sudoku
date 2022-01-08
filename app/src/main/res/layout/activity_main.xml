@@ -6,54 +6,84 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:drawer_icon="@drawable/ic_samsung_settings"
-    app:drawer_viewId="@id/viewInDrawer"
     app:toolbar_title="@string/app_name"
     tools:context=".MainActivity">
 
-    <include
-        android:id="@+id/viewInDrawer"
-        layout="@layout/content_drawer" />
-
-    <FrameLayout
+    <de.dlyt.yanndroid.oneui.view.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true">
-
-        <GridView
-            android:id="@+id/sudokuView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/sudoku_background"
-            android:nestedScrollingEnabled="true"
-            android:scrollbars="none" />
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/sesl_appbar_scrolling_view_behavior"
+        app:layout_location="main_content">
 
         <LinearLayout
-            android:id="@+id/hide_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/sudoku_background"
-            android:clickable="true"
-            android:gravity="center"
-            android:visibility="gone">
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/resume_button"
-                android:layout_width="wrap_content"
+            <de.dlyt.yanndroid.oneui.view.RecyclerView
+                android:id="@+id/game_recycler"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/resume" />
+                android:background="@color/item_background_color"
+                android:foreground="@drawable/sudoku_view_fg"
+                android:scrollbars="none" />
 
+            <LinearLayout
+                android:id="@+id/resume_button_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="15dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/ButtonStyle.Colored"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="5dp"
+                            android:onClick="resumeGameTimer"
+                            android:text="@string/resume" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/ButtonStyle.Colored"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="5dp"
+                            android:onClick="shareCurrentGame"
+                            android:text="@string/share" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/ButtonStyle.Colored"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="5dp"
+                            android:onClick="duplicateCurrentGame"
+                            android:text="@string/duplicate" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
         </LinearLayout>
 
-    </FrameLayout>
+    </de.dlyt.yanndroid.oneui.view.NestedScrollView>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </androidx.core.widget.NestedScrollView>
+    <include
+        android:id="@+id/viewInDrawer"
+        layout="@layout/drawer_content" />
 
 </de.dlyt.yanndroid.oneui.layout.DrawerLayout>

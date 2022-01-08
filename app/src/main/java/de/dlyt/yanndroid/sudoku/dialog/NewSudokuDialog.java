@@ -1,0 +1,48 @@
+package de.dlyt.yanndroid.sudoku.dialog;
+
+import android.app.Dialog;
+import android.content.Context;
+import android.os.Bundle;
+import android.view.View;
+
+import androidx.fragment.app.DialogFragment;
+
+import de.dlyt.yanndroid.oneui.dialog.AlertDialog;
+import de.dlyt.yanndroid.oneui.view.TabLayout;
+import de.dlyt.yanndroid.sudoku.R;
+import de.dlyt.yanndroid.sudoku.adapter.DialogViewPagerAdapter;
+import de.dlyt.yanndroid.sudoku.game.Game;
+import de.dlyt.yanndroid.sudoku.utils.DynamicViewPager;
+
+public class NewSudokuDialog extends DialogFragment {
+
+    private DialogListener dialogListener = game -> {
+    };
+
+    public void setDialogListener(DialogListener dialogListener) {
+        this.dialogListener = dialogListener;
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final Context context = getActivity();
+
+        View root_view = getLayoutInflater().inflate(R.layout.dialog_new_sudoku_root, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setTitle(R.string.new_sudoku)
+                .setView(root_view);
+
+        TabLayout tabLayout = root_view.findViewById(R.id.dialog_tabLayout);
+        DynamicViewPager viewPager = root_view.findViewById(R.id.dialog_viewPager);
+        viewPager.setAdapter(new DialogViewPagerAdapter(getChildFragmentManager(), dialogListener, context));
+        viewPager.setOffscreenPageLimit(2);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.updateWidget();
+
+        return builder.create();
+    }
+
+    public interface DialogListener {
+        void onResult(Game game);
+    }
+}

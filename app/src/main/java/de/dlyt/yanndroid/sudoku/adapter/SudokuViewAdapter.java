@@ -1,0 +1,67 @@
+package de.dlyt.yanndroid.sudoku.adapter;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.view.View;
+import android.view.ViewGroup;
+
+import de.dlyt.yanndroid.oneui.view.RecyclerView;
+import de.dlyt.yanndroid.sudoku.game.FieldView;
+import de.dlyt.yanndroid.sudoku.game.Game;
+
+public class SudokuViewAdapter extends RecyclerView.Adapter<SudokuViewAdapter.ViewHolder> {
+
+    private Context context;
+    private SharedPreferences sharedPreferences;
+    private boolean animateLayoutChanges_FieldView;
+
+    private Game game;
+    private FieldView[] fieldViews;
+
+    public SudokuViewAdapter(Context context, Game game) {
+        this(context, game, true);
+    }
+
+    public SudokuViewAdapter(Context context, Game game, boolean animateLayoutChanges_FieldView) {
+        this.context = context;
+        this.game = game;
+        this.animateLayoutChanges_FieldView = animateLayoutChanges_FieldView;
+        fieldViews = new FieldView[getItemCount()];
+        sharedPreferences = context.getSharedPreferences("de.dlyt.yanndroid.sudoku_preferences", Activity.MODE_PRIVATE);
+    }
+
+    public FieldView getFieldView(int position) {
+        return fieldViews[position];
+    }
+
+    public boolean isAnimateLayoutChanges_FieldView() {
+        return animateLayoutChanges_FieldView;
+    }
+
+    public void updateFieldView(int position) {
+        fieldViews[position].init(game, position, this);
+    }
+
+    @Override
+    public int getItemCount() {
+        return (int) Math.pow(game.getSize(), 2);
+    }
+
+    @Override
+    public void onBindViewHolder(SudokuViewAdapter.ViewHolder holder, int position) {
+        fieldViews[position] = ((FieldView) holder.itemView);
+        ((FieldView) holder.itemView).init(game, position, this);
+    }
+
+    @Override
+    public SudokuViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new SudokuViewAdapter.ViewHolder(new FieldView(context, sharedPreferences));
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        ViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+}

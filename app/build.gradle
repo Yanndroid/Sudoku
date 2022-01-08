@@ -11,8 +11,8 @@ android {
         applicationId "de.dlyt.yanndroid.sudoku"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 6
-        versionName "1.3.2"
+        versionCode 7
+        versionName "2.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,24 +29,15 @@ android {
     }
 }
 
-repositories {
-    maven {
-        url = uri("https://maven.pkg.github.com/yanndroid/OneUI-Design-Library")
-        credentials {
-            username = "Yanndroid"
-            password = "$System.env.GITHUB_TOKEN"
-        }
-    }
-}
-
 dependencies {
 
-    implementation 'de.dlyt.yanndroid:oneui:1.3.0'
+    implementation 'io.github.yanndroid:oneui:2.2.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
-    implementation 'com.google.firebase:firebase-database:20.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'com.google.firebase:firebase-database:20.0.3'
+    implementation "androidx.asynclayoutinflater:asynclayoutinflater:1.0.0"
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

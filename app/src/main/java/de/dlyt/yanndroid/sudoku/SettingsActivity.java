@@ -1,196 +1,208 @@
 package de.dlyt.yanndroid.sudoku;
 
-import android.app.Activity;
-import android.app.AlertDialog;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
 import android.view.View;
-import android.widget.RadioButton;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.ColorRes;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.util.SeslMisc;
 
-import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
-import de.dlyt.yanndroid.oneui.ColorPickerDialog;
-import de.dlyt.yanndroid.oneui.ThemeColor;
+import de.dlyt.yanndroid.oneui.dialog.AlertDialog;
 import de.dlyt.yanndroid.oneui.layout.ToolbarLayout;
+import de.dlyt.yanndroid.oneui.preference.ColorPickerPreference;
+import de.dlyt.yanndroid.oneui.preference.HorizontalRadioPreference;
+import de.dlyt.yanndroid.oneui.preference.Preference;
+import de.dlyt.yanndroid.oneui.preference.PreferenceFragment;
+import de.dlyt.yanndroid.oneui.preference.SwitchPreference;
+import de.dlyt.yanndroid.oneui.utils.ThemeUtil;
+import de.dlyt.yanndroid.sudoku.utils.Updater;
 
 public class SettingsActivity extends AppCompatActivity {
-
-    private View light_mode_card;
-    private RadioButton light_mode_card_radio;
-    private View dark_mode_card;
-    private RadioButton dark_mode_card_radio;
-    private SwitchMaterial theme_mode_system_switch;
-
-    private View colorCircle;
-    private SharedPreferences spColorTheme;
-    private SwitchMaterial grid_color_switch;
-
-    private SharedPreferences sharedPreferences;
-    private DatabaseReference mDatabase;
-    private View about_new;
-
-    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new ThemeColor(this);
+        new ThemeUtil(this);
         setContentView(R.layout.activity_settings);
-        context = this;
-
-        sharedPreferences = getSharedPreferences("settings", Activity.MODE_PRIVATE);
 
         ToolbarLayout toolbarLayout = findViewById(R.id.toolbar_layout);
-        toolbarLayout.setNavigationOnClickListener(v -> onBackPressed());
+        toolbarLayout.setNavigationButtonTooltip(getString(R.string.sesl_navigate_up));
+        toolbarLayout.setNavigationButtonOnClickListener(v -> onBackPressed());
 
-        about_new = findViewById(R.id.about_new);
-
-        light_mode_card = findViewById(R.id.light_mode_card);
-        light_mode_card_radio = findViewById(R.id.light_mode_card_radio);
-        dark_mode_card = findViewById(R.id.dark_mode_card);
-        dark_mode_card_radio = findViewById(R.id.dark_mode_card_radio);
-        theme_mode_system_switch = findViewById(R.id.theme_mode_system_switch);
-
-        grid_color_switch = findViewById(R.id.grid_color_switch);
-        colorCircle = findViewById(R.id.colorCircle);
-        spColorTheme = getSharedPreferences("ThemeColor", Context.MODE_PRIVATE);
-        GradientDrawable circleDrawable = (GradientDrawable) ((RippleDrawable) colorCircle.getBackground()).getDrawable(0);
-        circleDrawable.setColor(ColorStateList.valueOf(Color.parseColor("#" + spColorTheme.getString("color", "15b76d"))));
-
-        grid_color_switch.setChecked(sharedPreferences.getBoolean("gridColorSwitch", true));
-        grid_color_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            MainActivity.gridSettingChanged = true;
-            sharedPreferences.edit().putBoolean("gridColorSwitch", isChecked).apply();
-        });
-
-        setLayoutToTheme(sharedPreferences.getBoolean("darkMode", false));
-        theme_mode_system_switch.setChecked(sharedPreferences.getBoolean("themeSystemSwitch", true));
-        theme_mode_system_switch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            sharedPreferences.edit().putBoolean("themeSystemSwitch", isChecked).apply();
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-            } else {
-                boolean sysIsDark = ((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
-                AppCompatDelegate.setDefaultNightMode(sysIsDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-                sharedPreferences.edit().putBoolean("darkMode", sysIsDark).apply();
-            }
-        });
-
-        light_mode_card.setOnClickListener(v -> {
-            theme_mode_system_switch.setChecked(false);
-            sharedPreferences.edit().putBoolean("themeSystemSwitch", false).apply();
-            sharedPreferences.edit().putBoolean("darkMode", false).apply();
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            setLayoutToTheme(false);
-        });
-        dark_mode_card.setOnClickListener(v -> {
-            theme_mode_system_switch.setChecked(false);
-            sharedPreferences.edit().putBoolean("themeSystemSwitch", false).apply();
-            sharedPreferences.edit().putBoolean("darkMode", true).apply();
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            setLayoutToTheme(true);
-        });
-
-        checkForUpdate();
-
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.settings, new SettingsFragment()).commit();
+        }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        boolean sysIsDark = ((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
-        setLayoutToTheme(sysIsDark);
-    }
+    public static class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 
-    private void setLayoutToTheme(boolean night) {
-        dark_mode_card_radio.setChecked(night);
-        dark_mode_card_radio.setTypeface(night ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
-        light_mode_card_radio.setChecked(!night);
-        light_mode_card_radio.setTypeface(!night ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
-    }
+        private Context mContext;
+        private SettingsActivity mActivity;
+        private SharedPreferences sharedPreferences;
 
-    public void colorPickerDialog(View view) {
-        ColorPickerDialog mColorPickerDialog;
-        String stringColor = spColorTheme.getString("color", "15b76d");
-        float[] currentColor = new float[3];
-        Color.colorToHSV(Color.parseColor("#" + stringColor), currentColor);
-        mColorPickerDialog = new ColorPickerDialog(this, 2, currentColor);
-        mColorPickerDialog.setColorPickerChangeListener(new ColorPickerDialog.ColorPickerChangedListener() {
-            @Override
-            public void onColorChanged(int i, float[] fArr) {
-                if (!(fArr[0] == currentColor[0] && fArr[1] == currentColor[1] && fArr[2] == currentColor[2])) {
-                    ThemeColor.setColor(SettingsActivity.this, fArr);
-                    MainActivity.colorSettingChanged = true;
+        @Override
+        public void onAttach(Context context) {
+            super.onAttach(context);
+            mContext = getContext();
+            if (getActivity() instanceof SettingsActivity)
+                mActivity = ((SettingsActivity) getActivity());
+        }
+
+        @Override
+        public void onCreatePreferences(Bundle bundle, String str) {
+            addPreferencesFromResource(R.xml.preferences);
+        }
+
+        @SuppressLint("RestrictedApi")
+        @Override
+        public void onCreate(Bundle bundle) {
+            super.onCreate(bundle);
+
+            sharedPreferences = mContext.getSharedPreferences("de.dlyt.yanndroid.sudoku_preferences", Context.MODE_PRIVATE);
+            int darkMode = ThemeUtil.getDarkMode(mContext);
+
+            HorizontalRadioPreference darkModePref = (HorizontalRadioPreference) findPreference("dark_mode");
+            darkModePref.setOnPreferenceChangeListener(this);
+            darkModePref.setDividerEnabled(false);
+            darkModePref.setTouchEffectEnabled(false);
+            darkModePref.setEnabled(darkMode != ThemeUtil.DARK_MODE_AUTO);
+            darkModePref.setValue(SeslMisc.isLightTheme(mContext) ? "0" : "1");
+
+            SwitchPreference autoDarkModePref = (SwitchPreference) findPreference("dark_mode_auto");
+            autoDarkModePref.setOnPreferenceChangeListener(this);
+            autoDarkModePref.setChecked(darkMode == ThemeUtil.DARK_MODE_AUTO);
+
+            initThemeColorPicker();
+            initGameColorPicker("hint_color", "recent_hint_colors", R.color.blue);
+            initGameColorPicker("error_color", "recent_error_colors", R.color.sesl_error_color);
+
+            findPreference("grid_box_colors").setOnPreferenceChangeListener(this);
+            findPreference("invert_colors").setOnPreferenceChangeListener(this);
+
+            findPreference("how_to_play").setOnPreferenceClickListener(var1 -> {
+                new AlertDialog.Builder(mContext)
+                        .setTitle(R.string.how_to_play)
+                        .setMessage(R.string.how_to_play_summary)
+                        .setPositiveButton(R.string.dismiss, null)
+                        .show();
+                return true;
+            });
+
+            findPreference("restore_all_settings").setOnPreferenceClickListener(var1 -> {
+                new AlertDialog.Builder(mContext)
+                        .setTitle(R.string.restore_all_settings)
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            mContext.getSharedPreferences("ThemeColor", Context.MODE_PRIVATE).edit().clear().apply();
+                            mContext.getSharedPreferences("de.dlyt.yanndroid.sudoku_preferences", Context.MODE_PRIVATE).edit().clear().apply();
+
+                            MainActivity.colorSettingChanged = true;
+                            MainActivity.gameSettingChanged = true;
+                            mActivity.recreate();
+                        })
+                        .show();
+                return true;
+            });
+
+            Updater.checkForUpdate(getContext(), new Updater.UpdateChecker() {
+                @Override
+                public void updateAvailable(boolean available, String url, String versionName) {
+                    Preference about_app = findPreference("about_app");
+                    about_app.setWidgetLayoutResource(available ? R.layout.sesl_preference_badge : 0);
                 }
+
+                @Override
+                public void githubAvailable(String url) {
+
+                }
+
+                @Override
+                public void noConnection() {
+
+                }
+            });
+
+            if (!sharedPreferences.getBoolean("dev_enabled", false)) {
+                getPreferenceScreen().removePreference(findPreference("dev_options"));
             }
+        }
 
-            @Override
-            public void onViewModeChanged(int i) {
+        private void initThemeColorPicker() {
+            ColorPickerPreference themeColorPickerPref = (ColorPickerPreference) findPreference("theme_color");
+            ArrayList<Integer> recent_colors = new Gson().fromJson(sharedPreferences.getString("recent_theme_colors", new Gson().toJson(new int[]{getResources().getColor(R.color.primary_color, mContext.getTheme())})), new TypeToken<ArrayList<Integer>>() {
+            }.getType());
+            for (Integer recent_color : recent_colors)
+                themeColorPickerPref.onColorChanged(recent_color);
 
-            }
-        });
-        mColorPickerDialog.show();
-    }
+            themeColorPickerPref.setOnPreferenceChangeListener((var1, var2) -> {
+                Color color = Color.valueOf((Integer) var2);
 
-    public void openAboutPage(View view) {
-        startActivity(new Intent().setClass(getApplicationContext(), AboutActivity.class));
-    }
+                recent_colors.add((Integer) var2);
+                sharedPreferences.edit().putString("recent_theme_colors", new Gson().toJson(recent_colors)).apply();
 
-    public void howToPlay(View view) {
-        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.DialogStyle))
-                .setTitle(R.string.how_to_play)
-                .setMessage(R.string.how_to_play_summary)
-                .setPositiveButton(R.string.dismiss, null)
-                .show();
-    }
+                ThemeUtil.setColor(mActivity, color.red(), color.green(), color.blue());
+                MainActivity.colorSettingChanged = true;
+                return true;
+            });
+        }
 
-    private void checkForUpdate() {
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Sudoku");
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try {
-                    HashMap<String, String> hashMap = new HashMap<>();
-                    for (DataSnapshot child : snapshot.getChildren()) {
-                        hashMap.put(child.getKey(), child.getValue().toString());
+        private void initGameColorPicker(String prefKey, String shprKey, @ColorRes int defaultColor) {
+            ColorPickerPreference themeColorPickerPref = (ColorPickerPreference) findPreference(prefKey);
+            ArrayList<Integer> recent_colors = new Gson().fromJson(sharedPreferences.getString(shprKey, new Gson().toJson(new int[]{getResources().getColor(defaultColor, mContext.getTheme())})), new TypeToken<ArrayList<Integer>>() {
+            }.getType());
+            for (Integer recent_color : recent_colors)
+                themeColorPickerPref.onColorChanged(recent_color);
+
+            themeColorPickerPref.setOnPreferenceChangeListener((var1, var2) -> {
+                recent_colors.add((Integer) var2);
+                sharedPreferences.edit().putString("recent_hint_colors", new Gson().toJson(recent_colors)).apply();
+                MainActivity.gameSettingChanged = true;
+                return true;
+            });
+        }
+
+        @Override
+        public void onViewCreated(View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            getView().setBackgroundColor(getResources().getColor(R.color.item_background_color, mContext.getTheme()));
+        }
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+            switch (preference.getKey()) {
+                case "dark_mode":
+                    String currentDarkMode = String.valueOf(ThemeUtil.getDarkMode(mContext));
+                    if (currentDarkMode != newValue) {
+                        ThemeUtil.setDarkMode(mActivity, ((String) newValue).equals("0") ? ThemeUtil.DARK_MODE_DISABLED : ThemeUtil.DARK_MODE_ENABLED);
                     }
-
-                    if (Integer.parseInt(hashMap.get("versionCode")) > getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
-                        about_new.setVisibility(View.VISIBLE);
+                    return true;
+                case "dark_mode_auto":
+                    HorizontalRadioPreference darkModePref = (HorizontalRadioPreference) findPreference("dark_mode");
+                    if ((boolean) newValue) {
+                        darkModePref.setEnabled(false);
+                        ThemeUtil.setDarkMode(mActivity, ThemeUtil.DARK_MODE_AUTO);
                     } else {
-                        about_new.setVisibility(View.GONE);
+                        darkModePref.setEnabled(true);
                     }
-                } catch (PackageManager.NameNotFoundException e) {
-                    about_new.setVisibility(View.GONE);
-                }
+                    return true;
+                case "grid_box_colors":
+                case "invert_colors":
+                    MainActivity.gameSettingChanged = true;
+                    return true;
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            return false;
+        }
 
-            }
-        });
     }
-
 }

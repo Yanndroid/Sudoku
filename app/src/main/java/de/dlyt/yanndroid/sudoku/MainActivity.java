@@ -2,444 +2,525 @@ package de.dlyt.yanndroid.sudoku;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.ContextThemeWrapper;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Environment;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.widget.GridView;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.content.FileProvider;
 
-import com.google.android.material.button.MaterialButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 
-import de.dlyt.yanndroid.oneui.ThemeColor;
-import de.dlyt.yanndroid.oneui.drawer.OptionGroup;
+import de.dlyt.yanndroid.oneui.dialog.AlertDialog;
+import de.dlyt.yanndroid.oneui.dialog.ProgressDialog;
 import de.dlyt.yanndroid.oneui.layout.DrawerLayout;
-import de.dlyt.yanndroid.sudoku.adapter.GamesAdapter;
-import de.dlyt.yanndroid.sudoku.adapter.SudokuAdapter;
-import de.dlyt.yanndroid.sudoku.utils.Game;
-import de.dlyt.yanndroid.sudoku.utils.GameArrayList;
-import de.dlyt.yanndroid.sudoku.utils.Timer;
+import de.dlyt.yanndroid.oneui.layout.ToolbarLayout;
+import de.dlyt.yanndroid.oneui.menu.Menu;
+import de.dlyt.yanndroid.oneui.menu.MenuItem;
+import de.dlyt.yanndroid.oneui.sesl.recyclerview.GridLayoutManager;
+import de.dlyt.yanndroid.oneui.sesl.recyclerview.SeslLinearLayoutManager;
+import de.dlyt.yanndroid.oneui.sesl.utils.ReflectUtils;
+import de.dlyt.yanndroid.oneui.utils.ThemeUtil;
+import de.dlyt.yanndroid.oneui.view.OptionGroup;
+import de.dlyt.yanndroid.oneui.view.RecyclerView;
+import de.dlyt.yanndroid.sudoku.adapter.GamesListAdapter;
+import de.dlyt.yanndroid.sudoku.adapter.SudokuViewAdapter;
+import de.dlyt.yanndroid.sudoku.dialog.NewSudokuDialog;
+import de.dlyt.yanndroid.sudoku.game.Field;
+import de.dlyt.yanndroid.sudoku.game.Game;
 
 public class MainActivity extends AppCompatActivity {
 
     public static boolean colorSettingChanged = false;
-    public static boolean gridSettingChanged = false;
+    public static boolean gameSettingChanged = false;
 
     private DrawerLayout drawerLayout;
+    private ToolbarLayout toolbarLayout;
     private OptionGroup optionGroup;
-    private Menu menu;
-    private Dialog mLoadingDialog;
-
-    private Timer timer;
-    private View hide_layout;
-    private MaterialButton resume_button;
 
     private Context context;
-    private SharedPreferences sharedPreferences;
-    private DatabaseReference mDatabase;
+    private SharedPreferences sharedPref_Games;
+    private SharedPreferences sharedPref_Settings;
 
-    private GridView sudokuView;
-    private SudokuAdapter sudokuAdapter;
-    private GameArrayList games = new GameArrayList();
-    private Game currentGame;
-    private Integer[][] currentGrid;
+    private List<Game> games;
+    private RecyclerView games_list;
+    private GamesListAdapter gamesListAdapter;
 
-    private RecyclerView games_recycler;
-    private GamesAdapter gamesAdapter;
+    private Game current_game;
+    private RecyclerView game_recycler;
+    private SudokuViewAdapter game_adapter;
 
+    private LinearLayout resume_button_layout;
+    private ProgressDialog mLoadingDialog;
+
+    @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new ThemeColor(this);
+        new ThemeUtil(this);
         setContentView(R.layout.activity_main);
-
         context = this;
-        sharedPreferences = getSharedPreferences("Sudoku", Activity.MODE_PRIVATE);
+        sharedPref_Games = getSharedPreferences("Games", Activity.MODE_PRIVATE);
+        sharedPref_Settings = getSharedPreferences("de.dlyt.yanndroid.sudoku_preferences", Context.MODE_PRIVATE);
+
+        mLoadingDialog = new ProgressDialog(this);
+        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_CIRCLE_ONLY);
+        mLoadingDialog.setCancelable(false);
 
         drawerLayout = findViewById(R.id.drawer_view);
-        setSupportActionBar(drawerLayout.getToolbar());
-        drawerLayout.setDrawerIconOnClickListener(v -> startActivity(new Intent().setClass(context, SettingsActivity.class)));
-        menu = drawerLayout.getToolbar().getMenu();
+        drawerLayout.setDrawerButtonTooltip(getString(R.string.action_settings));
+        drawerLayout.setDrawerButtonOnClickListener(v -> startActivity(new Intent().setClass(context, SettingsActivity.class)));
 
-        mLoadingDialog = new Dialog(context, R.style.LargeProgressDialog);
-        mLoadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mLoadingDialog.setCancelable(false);
-        mLoadingDialog.setContentView(getLayoutInflater().inflate(R.layout.dialog_full_loading, null));
+        toolbarLayout = drawerLayout.getToolbarLayout();
+        toolbarLayout.setOnToolbarMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                //play menu
+                case R.id.menu_undo:
+                    if (current_game == null) break;
+                    current_game.revertLastChange(game_adapter);
+                    break;
+                case R.id.menu_pause:
+                    toggleGameTimer();
+                    break;
+                case R.id.menu_duplicate:
+                    duplicateCurrentGame(null);
+                    break;
+                case R.id.menu_show_errors:
+                    showErrors();
+                    break;
+                case R.id.menu_solve:
+                    pauseGameTimer();
+                    popupGame(current_game.getSolutionGame());
+                    break;
+                case R.id.menu_share:
+                    pauseGameTimer();
+                    shareCurrentGame(null);
+                    break;
 
-        sudokuView = findViewById(R.id.sudokuView);
-        sudokuView.setClipToOutline(true);
+                //solve menu
+                case R.id.menu_clear:
+                    loadEmptyGame();
+                    break;
+                case R.id.menu_solver_solve:
+                    mLoadingDialog.show();
+                    new AsyncTask<Void, Void, Object>() {
+                        @Override
+                        protected Object doInBackground(Void... voids) {
+                            return current_game.makeSolutionFromEdit();
+                        }
+
+                        @Override
+                        protected void onPostExecute(Object o) {
+                            if (o instanceof Integer)
+                                Toast.makeText(context, (int) o == 0 ? R.string.no_solution : R.string.multiple_solutions, Toast.LENGTH_SHORT).show();
+                            else popupGame((Game) o);
+                            mLoadingDialog.dismiss();
+                        }
+                    }.execute();
+                    break;
+                case R.id.menu_save:
+                    mLoadingDialog.show();
+                    new AsyncTask<Void, Void, Object>() {
+                        @Override
+                        protected Object doInBackground(Void... voids) {
+                            return current_game.makeGameFromEdit();
+                        }
+
+                        @Override
+                        protected void onPostExecute(Object o) {
+                            if (o instanceof Integer)
+                                Toast.makeText(context, (int) o == 0 ? R.string.no_solution : R.string.multiple_solutions, Toast.LENGTH_SHORT).show();
+                            else {
+                                ((Game) o).setName("Sudoku " + (games.size() + 1));
+                                addGameToList((Game) o);
+                                Toast.makeText(context, getString(R.string.game_added_to_list), Toast.LENGTH_SHORT).show();
+                            }
+                            mLoadingDialog.dismiss();
+                        }
+                    }.execute();
+                    break;
+            }
+            return true;
+        });
+
+        resume_button_layout = findViewById(R.id.resume_button_layout);
+        toolbarLayout.getAppBarLayout().addOnOffsetChangedListener((layout, verticalOffset) -> {
+            int totalScrollRange = layout.getTotalScrollRange();
+            int inputMethodWindowVisibleHeight = (int) ReflectUtils.genericInvokeMethod(InputMethodManager.class, getSystemService(INPUT_METHOD_SERVICE), "getInputMethodWindowVisibleHeight");
+            if (resume_button_layout != null) {
+                if (totalScrollRange != 0) {
+                    resume_button_layout.setTranslationY(((float) (Math.abs(verticalOffset) - totalScrollRange)) / 2.0f);
+                } else {
+                    resume_button_layout.setTranslationY(((float) (Math.abs(verticalOffset) - inputMethodWindowVisibleHeight)) / 2.0f);
+                }
+            }
+        });
 
         optionGroup = findViewById(R.id.optionGroup);
         optionGroup.setOnOptionButtonClickListener((optionButton, i, i1) -> {
             drawerLayout.setDrawerOpen(false, true);
             switch (i) {
                 case R.id.play_sudoku:
-                    loadGame(sharedPreferences.getInt("lastGame", 0));
+                    loadLastGame();
                     break;
                 case R.id.solve_sudoku:
-                    drawerLayout.setToolbarTitle(getString(R.string.app_name));
-                    drawerLayout.setToolbarSubtitle(getString(R.string.solver));
-                    menu.setGroupVisible(R.id.play_group, false);
-                    stopTimer();
-                    currentGame = null;
-                    sudokuAdapter = null;
-                    sudokuView.setAdapter(sudokuAdapter);
-                    loadSolver();
+                    loadEmptyGame();
                     break;
             }
         });
 
-        checkForUpdate();
+        game_recycler = findViewById(R.id.game_recycler);
 
-        hide_layout = findViewById(R.id.hide_layout);
-        resume_button = findViewById(R.id.resume_button);
-        resume_button.setOnClickListener(v -> startTimer());
-        timer = new Timer();
-        timer.setOnTimeChanged(time -> drawerLayout.setToolbarSubtitle(getString(R.string.elapsed_time, timer.getTimeString())));
+        //load game form intent, list or new
+        games = new Gson().fromJson(sharedPref_Games.getString("games", "[]"), new TypeToken<List<Game>>() {
+        }.getType());
 
-        games = new Gson().fromJson(sharedPreferences.getString("Games", "{}"), GameArrayList.class);
-        if (games.isEmpty()) {
-            newSudoku(null);
+        initDrawer();
+
+        Game importedGame = getGameFromIntent(getIntent());
+        if (importedGame != null) {
+            addGameToList(importedGame);
+            loadGame(importedGame);
+        } else if (games.size() == 0) {
+            newSudokuDialog(false);
+        } else if ("de.dlyt.yanndroid.sudoku.NEW_SUDOKU".equals(getIntent().getAction())) {
+            newSudokuDialog(true);
         } else {
-            loadGame(sharedPreferences.getInt("lastGame", 0));
-        }
-
-        games_recycler = findViewById(R.id.games_recycler);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        linearLayoutManager.setStackFromEnd(true);
-        linearLayoutManager.setReverseLayout(true);
-        games_recycler.setLayoutManager(linearLayoutManager);
-        gamesAdapter = new GamesAdapter(context, games);
-        games_recycler.setAdapter(gamesAdapter);
-
-        if (sharedPreferences.getBoolean("firstTime", true)) {
-            new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.DialogStyle))
-                    .setTitle(R.string.how_to_play)
-                    .setMessage(R.string.how_to_play_summary)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.dismiss, (dialog, which) -> sharedPreferences.edit().putBoolean("firstTime", false).apply())
-                    .show();
-        }
-
-    }
-
-    public void onDeleteGame(Game delGame) {
-        if (delGame == currentGame) {
-            sudokuAdapter = null;
-            sudokuView.setAdapter(sudokuAdapter);
-            drawerLayout.setToolbarTitle(getString(R.string.app_name));
-            drawerLayout.setToolbarSubtitle(null);
-            menu.setGroupVisible(R.id.play_group, false);
-            currentGame = null;
-            stopTimer();
-        }
-        if (games.isEmpty()) {
-            drawerLayout.setDrawerOpen(false, true);
-            newSudoku(null);
-        }
-
-    }
-
-    public void onGameFinished() {
-        stopTimer();
-        currentGame.setFinished(true);
-        gamesAdapter.notifyDataSetChanged();
-        menu.setGroupVisible(R.id.play_group, false);
-        drawerLayout.setToolbarSubtitle(getString(R.string.time, new Timer().timeToString(currentGame.getTime())));
-        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.DialogStyle))
-                .setTitle(R.string.sudoku_done)
-                .setMessage(context.getString(R.string.time, timer.getTimeString()))
-                .setPositiveButton(R.string.new_sudoku, (dialog, which) -> ((MainActivity) context).newSudoku(null))
-                .setNegativeButton(R.string.dismiss, null)
-                .show();
-        sudokuAdapter = new SudokuAdapter(context, currentGame);
-        sudokuView.setAdapter(sudokuAdapter);
-    }
-
-    public void onNameChange(Game reGame, String name) {
-        if (reGame == currentGame) {
-            drawerLayout.setToolbarTitle(name);
+            loadLastGame();
         }
     }
 
-    private void stopTimer() {
-        if (timer != null) timer.stop();
-        if (currentGame != null)
-            if (!currentGame.isFinished()) currentGame.setTime(timer.getTime());
-    }
+    private void initDrawer() {
+        ((ImageView) findViewById(R.id.newSudoku).findViewById(R.id.optionbutton_icon)).setImageTintList(ColorStateList.valueOf(getColor(R.color.green)));
 
-    private void startTimer() {
-        if (timer != null && currentGame != null) if (!currentGame.isFinished()) {
-            timer.start();
-            hide_layout.setVisibility(View.GONE);
-            MenuItem menuItem = menu.findItem(R.id.pause);
-            if (menuItem != null) {
-                menuItem.setIcon(R.drawable.ic_samsung_pause);
-                menuItem.setTooltipText(getString(R.string.pause));
+        games_list = findViewById(R.id.games_list);
+        SeslLinearLayoutManager llm = new SeslLinearLayoutManager(this);
+        llm.setStackFromEnd(true);
+        llm.setReverseLayout(true);
+        games_list.setLayoutManager(llm);
+        gamesListAdapter = new GamesListAdapter(context, games, new GamesListAdapter.GamesListListener() {
+            @Override
+            public void onNameChange(Game game) {
+                if (game == current_game) toolbarLayout.setTitle(current_game.getName());
             }
+
+            @Override
+            public void onGameDeleted(Game game) {
+                if (game == current_game) {
+                    current_game.stopTimer();
+                    toolbarLayout.setTitle(getString(R.string.app_name));
+                    toolbarLayout.setSubtitle(null);
+                    current_game = null;
+                    game_recycler.setAdapter(null);
+
+                    toolbarLayout.inflateToolbarMenu(new Menu());
+                    resume_button_layout.setVisibility(View.GONE);
+                }
+            }
+        });
+        games_list.setAdapter(gamesListAdapter);
+    }
+
+
+    public void newSudokuDialog(View view) {
+        drawerLayout.setDrawerOpen(false, true);
+        newSudokuDialog(true);
+    }
+
+    private void newSudokuDialog(boolean cancelable) {
+        NewSudokuDialog newSudokuDialog = new NewSudokuDialog();
+        newSudokuDialog.setCancelable(cancelable);
+        newSudokuDialog.setDialogListener(game -> {
+            newSudokuDialog.dismiss();
+            game.setName("Sudoku " + (games.size() + 1));
+            addGameToList(game);
+            loadGame(game);
+        });
+        newSudokuDialog.show(getSupportFragmentManager(), "");
+    }
+
+    private void loadLastGame() {
+        int index = sharedPref_Games.getInt("last_game_index", games.size() - 1);
+        if (index == -1 || index >= games.size()) index = games.size() - 1;
+        loadGame(games.get(index));
+    }
+
+    public void loadGame(Game game) {
+        drawerLayout.setDrawerOpen(false, true);
+
+        if (game == current_game) return;
+        if (current_game != null) current_game.stopTimer();
+
+        toolbarLayout.inflateToolbarMenu(R.menu.main_game);
+        optionGroup.setSelectedOptionButton((Integer) R.id.play_sudoku);
+
+        current_game = game;
+        toolbarLayout.setTitle(game.getName());
+        toolbarLayout.setSubtitle(getString(current_game.isCompleted() ? R.string.elapsed_time : R.string.current_time, current_game.getTimeString()));
+
+        //recycler
+        game_recycler.setLayoutManager(new GridLayoutManager(context, game.getSize()));
+        game_adapter = new SudokuViewAdapter(context, game);
+        game_recycler.setAdapter(game_adapter);
+        game_recycler.seslSetFillBottomEnabled(true);
+        game_recycler.seslSetLastRoundedCorner(true);
+
+        //game
+        toolbarLayout.getToolbarMenu().setGroupVisible(R.id.playable_group, !current_game.isCompleted());
+        current_game.setGameListener(new Game.GameListener() {
+            @Override
+            public void onHistoryChange(int length) {
+                toolbarLayout.getToolbarMenu().findItem(R.id.menu_undo).setEnabled(current_game.hasHistory());
+            }
+
+            @Override
+            public void onCompleted() {
+                gamesListAdapter.notifyChanged();
+                toolbarLayout.getToolbarMenu().setGroupVisible(R.id.playable_group, !current_game.isCompleted());
+            }
+
+            @Override
+            public void onTimeChanged(String time) {
+                runOnUiThread(() -> toolbarLayout.setSubtitle(getString(R.string.current_time, time)));
+            }
+        });
+
+        resumeGameTimer(null);
+    }
+
+    private void loadEmptyGame() {
+        drawerLayout.setDrawerOpen(false, true);
+        resume_button_layout.setVisibility(View.GONE);
+        game_recycler.setVisibility(View.VISIBLE);
+
+        Game game = new Game(9);
+
+        if (game == current_game) return;
+        if (current_game != null) current_game.stopTimer();
+
+        toolbarLayout.inflateToolbarMenu(R.menu.main_solver);
+        toolbarLayout.setTitle(getString(R.string.solve_sudoku));
+        toolbarLayout.setSubtitle(null);
+
+        current_game = game;
+
+        //recycler
+        game_recycler.setLayoutManager(new GridLayoutManager(context, game.getSize()));
+        game_adapter = new SudokuViewAdapter(context, game);
+        game_recycler.setAdapter(game_adapter);
+        game_recycler.seslSetFillBottomEnabled(true);
+        game_recycler.seslSetLastRoundedCorner(true);
+    }
+
+    private void popupGame(Game game) {
+        RecyclerView game_view = new RecyclerView(context);
+        game_view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        game_view.setBackground(getDrawable(R.drawable.sudoku_view_popup_bg));
+        game_view.setClipToOutline(true);
+        game_view.setLayoutManager(new GridLayoutManager(context, game.getSize()));
+        game_view.setAdapter(new SudokuViewAdapter(context, game));
+
+        PopupWindow popupWindow = new PopupWindow(game_view, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setElevation(TypedValue.applyDimension(1, 12.0F, this.context.getResources().getDisplayMetrics()));
+        if (popupWindow.isClippingEnabled()) popupWindow.setClippingEnabled(false);
+        popupWindow.showAtLocation(game_recycler, Gravity.CENTER, 0, 0);
+
+        View container = popupWindow.getContentView().getRootView();
+        WindowManager.LayoutParams wmlp = (WindowManager.LayoutParams) container.getLayoutParams();
+        wmlp.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        wmlp.dimAmount = 0.6f;
+        ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).updateViewLayout(container, wmlp);
+    }
+
+    private Game getGameFromIntent(Intent intent) {
+        if (intent.getData() == null) return null;
+        Log.d("intent data", String.valueOf(intent.getData()));
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getContentResolver().openInputStream(intent.getData())));
+            StringBuilder content = new StringBuilder();
+            for (String line; (line = bufferedReader.readLine()) != null; ) {
+                content.append(line).append('\n');
+            }
+
+            Game game = new Gson().fromJson(content.toString(), Game.class);
+
+            if (game.getFields() == null) throw new Exception(getString(R.string.invalid_game));
+            Toast.makeText(context, getString(R.string.successfully_imported, game.getName()), Toast.LENGTH_SHORT).show();
+            return game;
+        } catch (Exception e) {
+            Toast.makeText(context, getString(R.string.failed_to_import_game) + "\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("import failed", e.getMessage());
+            return null;
         }
     }
 
-    public void loadGame(int index) {
-        if (!(index < games.size())) {
-            loadGame(games.size() - 1);
+    public void duplicateCurrentGame(View view) {
+        if (current_game == null) return;
+        Game duplicate = current_game.isCompleted() ? current_game.getInitialGame() : current_game.copy();
+        duplicate.setName(duplicate.getName() + getString(R.string._copy));
+        addGameToList(duplicate);
+    }
+
+    public void shareCurrentGame(View view) {
+        if (current_game == null) return;
+        if (current_game.isCompleted()) {
+            shareGame(current_game.getInitialGame());
             return;
         }
-        optionGroup.setSelectedOptionButton(findViewById(R.id.play_sudoku));
-        drawerLayout.setDrawerOpen(false, true);
-        Game game = games.get(index);
-        sharedPreferences.edit().putInt("lastGame", index).apply();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.share)
+                .setNegativeButton(R.string.initial_game, (dialog, which) -> shareGame(current_game.getInitialGame()))
+                .setPositiveButton(R.string.current_game, (dialog, which) -> shareGame(current_game))
+                .show();
+    }
 
-        drawerLayout.setToolbarTitle(game.getName());
-        menu.setGroupVisible(R.id.play_group, !game.isFinished());
-        menu.setGroupVisible(R.id.solve_group, false);
+    private void shareGame(Game game) {
+        if (game == null) return;
+        try {
+            String destination = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS).toString() + "/" + game.getName() + ".sudoku";
 
-        hide_layout.setVisibility(View.GONE);
-        MenuItem menuItem = menu.findItem(R.id.pause);
-        if (menuItem != null) {
-            menuItem.setIcon(R.drawable.ic_samsung_pause);
-            menuItem.setTooltipText(getString(R.string.pause));
+            File file = new File(destination);
+            if (file.exists()) file.delete();
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(new Gson().toJson(game));
+            fileWriter.flush();
+            fileWriter.close();
+
+            Intent shareGame = new Intent(Intent.ACTION_SEND);
+            Uri fileUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
+            shareGame.setType("application/octet-stream");
+            shareGame.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            shareGame.putExtra(Intent.EXTRA_STREAM, fileUri);
+
+            for (ResolveInfo ri : getPackageManager().queryIntentActivities(shareGame, PackageManager.MATCH_DEFAULT_ONLY))
+                grantUriPermission(ri.activityInfo.packageName, fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            startActivity(Intent.createChooser(shareGame, getString(R.string.share_sudoku)));
+
+        } catch (IOException e) {
+            Log.e("share", e.getMessage());
         }
+    }
 
-        if (currentGame != game) {
-            stopTimer();
-            if (!game.isFinished()) {
-                timer.setTime(game.getTime());
-                timer.start();
-            } else {
-                drawerLayout.setToolbarSubtitle(getString(R.string.time, new Timer().timeToString(game.getTime())));
+    private void saveAllGames() {
+        sharedPref_Games.edit()
+                .putString("games", new Gson().toJson(games))
+                .putInt("last_game_index", games.indexOf(current_game))
+                .apply();
+    }
+
+    private void addGameToList(Game game) {
+        games.add(game);
+        //gamesListAdapter.notifyItemInserted(games.size() - 1);
+        gamesListAdapter.notifyChanged();
+        games_list.scrollToPosition(games.size() - 1);
+    }
+
+    public void resumeGameTimer(View view) {
+        resume_button_layout.setVisibility(View.GONE);
+        if (!(current_game == null || current_game.isCompleted() || current_game.isEditMode())) {
+            current_game.startTimer(1500);
+
+            MenuItem item_pause_play = toolbarLayout.getToolbarMenu().findItem(R.id.menu_pause);
+            item_pause_play.setIcon(getDrawable(R.drawable.ic_samsung_pause));
+            item_pause_play.setTitle(getString(R.string.resume));
+            toolbarLayout.getToolbarMenu().findItem(R.id.menu_undo).setEnabled(current_game.hasHistory());
+            toolbarLayout.getToolbarMenu().findItem(R.id.menu_show_errors).setEnabled(true);
+        }
+        game_recycler.setVisibility(View.VISIBLE);
+    }
+
+    private void pauseGameTimer() {
+        if (current_game == null || current_game.isCompleted() || current_game.isEditMode()) return;
+        game_recycler.setVisibility(View.GONE);
+        current_game.stopTimer();
+
+        MenuItem item_pause_play = toolbarLayout.getToolbarMenu().findItem(R.id.menu_pause);
+        item_pause_play.setIcon(getDrawable(R.drawable.ic_samsung_play));
+        item_pause_play.setTitle(getString(R.string.pause));
+        toolbarLayout.getToolbarMenu().findItem(R.id.menu_undo).setEnabled(false);
+        toolbarLayout.getToolbarMenu().findItem(R.id.menu_show_errors).setEnabled(false);
+
+        resume_button_layout.setVisibility(View.VISIBLE);
+    }
+
+    private void toggleGameTimer() {
+        if (current_game.isTimerRunning()) pauseGameTimer();
+        else resumeGameTimer(null);
+    }
+
+    private void showErrors() {
+        if (current_game == null || current_game.isCompleted()) return;
+        int size = current_game.getSize();
+        Field[][] fields = current_game.getFields();
+
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                boolean wrong = (fields[i][j].getValue() != null && !fields[i][j].getValue().equals(fields[i][j].getSolution()));
+                game_adapter.getFieldView(i * size + j).setBackground(wrong);
+                fields[i][j].setError(wrong);
             }
-            sudokuView.setNumColumns(game.getLength());
-            sudokuAdapter = new SudokuAdapter(context, game);
-            sudokuView.setAdapter(sudokuAdapter);
         }
 
-        currentGame = game;
-        currentGrid = null;
-    }
-
-    private void loadSolver() {
-        CharSequence[] charSequences = {"4 x 4", "9 x 9", "16 x 16"};
-        new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle))
-                .setTitle(R.string.sudoku_size)
-                .setSingleChoiceItems(charSequences, -1, (dialog, which) -> {
-                    menu.setGroupVisible(R.id.solve_group, true);
-
-                    int length = 9;
-                    switch (which) {
-                        case 0:
-                            length = 4;
-                            break;
-                        case 1:
-                            length = 9;
-                            break;
-                        case 2:
-                            length = 16;
-                            break;
-                    }
-
-                    sudokuView.setNumColumns(length);
-                    Integer[][] grid = new Integer[length][length];
-                    boolean[][] preNumbers = new boolean[length][length];
-                    for (int i = 0; i < length; i++)
-                        for (int j = 0; j < length; j++) preNumbers[i][j] = false;
-                    sudokuAdapter = new SudokuAdapter(context, grid, preNumbers);
-                    sudokuView.setAdapter(sudokuAdapter);
-                    currentGrid = grid;
-                    dialog.dismiss();
-                })
-                .show();
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    public void newSudoku(View view) {
-        drawerLayout.setDrawerOpen(false, true);
-
-        CharSequence[] charSequences = {"4 x 4", "9 x 9"};
-        new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.DialogStyle))
-                .setTitle(R.string.new_sudoku)
-                .setCancelable(!games.isEmpty())
-                .setSingleChoiceItems(charSequences, -1, (dialog, which) -> {
-
-                    mLoadingDialog.show();
-
-                    int length = 9;
-                    switch (which) {
-                        case 0:
-                            length = 4;
-                            break;
-                        case 1:
-                            length = 9;
-                            break;
-                    }
-                    new AsyncTask<Integer, Void, Game>() {
-                        @Override
-                        protected Game doInBackground(Integer... integers) {
-                            return new Game(integers[0]);
-                        }
-
-                        @Override
-                        protected void onPostExecute(Game game) {
-                            super.onPostExecute(game);
-                            runOnUiThread(() -> {
-                                mLoadingDialog.dismiss();
-                                games.add(game);
-                                gamesAdapter.notifyDataSetChanged();
-                                loadGame(games.size() - 1);
-                            });
-                        }
-                    }.execute(length);
-
-                    dialog.dismiss();
-                })
-                .show();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        stopTimer();
-        sharedPreferences.edit().putString("Games", new Gson().toJson(games)).apply();
+        pauseGameTimer();
+        saveAllGames();
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        startTimer();
+        //resumeGameTimer(null); //note: only resume if it wasn't paused by the user
+
+        //settings
+        if (sharedPref_Settings.getBoolean("secure_flag", true)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+        game_recycler.setKeepScreenOn(sharedPref_Settings.getBoolean("keep_screen_on", true));
+
+        //appearance
         if (colorSettingChanged) {
             colorSettingChanged = false;
             drawerLayout.setDrawerOpen(false, false);
             recreate();
         }
-        if (gridSettingChanged) {
-            gridSettingChanged = false;
-            sudokuView.setAdapter(sudokuAdapter.getNew());
+        if (gameSettingChanged) {
+            gameSettingChanged = false;
+            game_recycler.setAdapter(new SudokuViewAdapter(context, current_game));
         }
     }
-
-
-    private void checkForUpdate() {
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Sudoku");
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                try {
-                    HashMap<String, String> hashMap = new HashMap<>();
-                    for (DataSnapshot child : snapshot.getChildren()) {
-                        hashMap.put(child.getKey(), child.getValue().toString());
-                    }
-
-                    if (Integer.parseInt(hashMap.get("versionCode")) > getPackageManager().getPackageInfo(getPackageName(), 0).versionCode) {
-                        drawerLayout.showIconNotification(true, true);
-                    } else {
-                        drawerLayout.showIconNotification(false, false);
-                    }
-                } catch (PackageManager.NameNotFoundException e) {
-                    drawerLayout.showIconNotification(false, false);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        if (currentGame != null) menu.setGroupVisible(R.id.play_group, !currentGame.isFinished());
-        return true;
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.solve:
-                mLoadingDialog.show();
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        currentGame = new Game(currentGrid);
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void unused) {
-                        runOnUiThread(() -> {
-                            mLoadingDialog.dismiss();
-                            showSolution();
-                            currentGame = null;
-                        });
-                        super.onPostExecute(unused);
-                    }
-                }.execute();
-                break;
-
-            case R.id.clear:
-                loadSolver();
-                break;
-
-            case R.id.solutions:
-                showSolution();
-                break;
-
-            case R.id.pause:
-                if (hide_layout.getVisibility() == View.GONE) {
-                    hide_layout.setVisibility(View.VISIBLE);
-                    stopTimer();
-                    item.setIcon(R.drawable.ic_samsung_play);
-                    item.setTooltipText(getString(R.string.resume));
-                } else {
-                    startTimer();
-                }
-
-                break;
-
-            case R.id.save:
-                currentGame.setTime(timer.getTime());
-                Game saveGame = new Gson().fromJson(new Gson().toJson(currentGame), Game.class);
-                saveGame.setName(currentGame.getName() + " " + getString(R.string.copy));
-                games.add(saveGame);
-                gamesAdapter.notifyDataSetChanged();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void showSolution() {
-        if (currentGame.getSolutions().isEmpty()) {
-            Toast.makeText(context, getString(R.string.no_solutions), Toast.LENGTH_SHORT).show();
-        } else {
-            Intent intent = new Intent().setClass(context, SolutionsActivity.class);
-            intent.putExtra("game", currentGame);
-            startActivity(intent);
-        }
-    }
-
 }

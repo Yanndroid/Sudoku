@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:alpha="0.9"
+    android:background="@drawable/sesl_menu_popup_background"
+    android:backgroundTint="@color/item_background_color"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="15dp">
+
+    <GridLayout
+        android:id="@+id/popup_numbers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        android:id="@+id/popup_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <de.dlyt.yanndroid.oneui.sesl.widget.ToolbarImageButton
+            android:id="@+id/popup_notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sesl_action_bar_item_background"
+            android:padding="10dp"
+            android:src="@drawable/ic_samsung_apps"
+            android:tint="@color/cyan" />
+
+        <de.dlyt.yanndroid.oneui.sesl.widget.ToolbarImageButton
+            android:id="@+id/popup_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sesl_action_bar_item_background"
+            android:padding="10dp"
+            android:src="@drawable/ic_samsung_delete"
+            android:tint="@color/magenta" />
+
+        <de.dlyt.yanndroid.oneui.sesl.widget.ToolbarImageButton
+            android:id="@+id/popup_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sesl_action_bar_item_background"
+            android:padding="10dp"
+            android:src="@drawable/ic_samsung_light_bulb"
+            android:tint="@color/yellow" />
+
+    </LinearLayout>
+
+</LinearLayout>

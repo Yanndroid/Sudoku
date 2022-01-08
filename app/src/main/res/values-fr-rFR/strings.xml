@@ -1,40 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="solution">Solution</string>
-    <string name="solutions">Solutions</string>
-    <string name="delete_sudoku">Supprimer ce Sudoku?</string>
-    <string name="new_sudoku">Nouveaux Sudoku</string>
-    <string name="delete">Supprimer</string>
-    <string name="rename">Renommer</string>
-    <string name="cancel">Annuler</string>
-    <string name="name">Nom</string>
-    <string name="sudoku_size">Taille du Sudoku</string>
+    <!--Settings-->
+    <string name="theme">Thème</string>
+    <string name="light">Clair</string>
+    <string name="dark">Sombre</string>
+    <string name="system_default">Système</string>
+    <string name="theme_color">Couleur du thème</string>
+    <string name="theme_color_summary">Change la couleur de l\'application.</string>
+
+    <string name="general">Général</string>
+    <string name="keep_screen_on">Gardez l\'écran allumé</string>
+    <string name="keep_screen_on_summary">Gardez l\'écran allumé pendant le jeu.</string>
+
+    <string name="appearance">Apparence</string>
+    <string name="grid_box_colors">Couleurs dans la grille</string>
+    <string name="grid_box_colors_summary">Activez ou désactivez la couleur des cases.</string>
+    <string name="invert_colors">Inverser les couleurs</string>
+    <string name="invert_colors_summary">Inversez la couleur des numéros prédéfinis et ajoutés par l\'utilisateur.</string>
+    <string name="hint_color">Couleur des numéros d\'indices</string>
+    <string name="hint_color_summary">Changer la couleur des numéros d\'indice.</string>
+    <string name="error_color">Couleur d\'arrière-plan des fautes</string>
+    <string name="error_color_summary">Changez la couleur des fausses cases.</string>
+
+    <string name="dev_options">Options de développeur</string>
+    <string name="secure_flag">Secure Flag</string>
+    <string name="secure_flag_summary">Bloquez les captures d\'écran et masquez l\'écran dans les applications récentes.</string>
+
+    <string name="how_to_play">Comment jouer</string>
+    <string name="how_to_play_summary">Appuyez sur une case pour ajouter ou supprimer le numéro et les notes, ou pour obtenir la solution pour cette case. Vous pouvez également cliquer longuement dessus pour effacer le numéro. Chaque ligne, colonne et rectangle ne peut contenir un chiffre qu\'une seule fois.</string>
+    <string name="restore_all_settings">Restaurer tous les paramètres</string>
+    <string name="about_sudoku">À propos de Sudoku</string>
+
+    <!--Game menu-->
+    <string name="undo">Défaire</string>
     <string name="pause">Pause</string>
+    <string name="resume">Reprendre</string>
+    <string name="duplicate">Dupliquer</string>
+    <string name="solution">Solution</string>
+    <string name="share">Partager</string>
+    <string name="clear">Dégager</string>
     <string name="save">Sauvegarder</string>
-    <string name="clear">Nettoyer</string>
-    <string name="solve">Résoudre</string>
+
+    <string name="notes">Notes</string>
+    <string name="hint">Indice</string>
+    <string name="remove">Supprimer</string>
+
+    <string name="initial_game">Jeu initial</string>
+    <string name="current_game">Jeu actuel</string>
+    <string name="share_sudoku">Partager Sudoku</string>
+
+    <!--Drawer-->
     <string name="play_sudoku">Jouer au Sudoku</string>
     <string name="solve_sudoku">Résoudre un Sudoku</string>
-    <string name="found_100_plus_soultion">100+ solutions trouvées</string>
-    <string name="copy">copie</string>
-    <string name="elapsed_time">Temps écoulé: %1$s</string>
-    <string name="about_sudoku">À propos de Sudoku</string>
-    <string name="dark_n">Sombre\n</string>
-    <string name="light_n">Clair\n</string>
-    <string name="theme">Thème</string>
-    <string name="color">Couleur</string>
-    <string name="theme_color">Couleur du thème</string>
-    <string name="system_default">Système</string>
-    <string name="theme_color_summary">Change la couleur de l\'application</string>
-    <string name="grid_box_colors">Couleurs dans la grille</string>
-    <string name="solver">Solveur</string>
+    <string name="new_sudoku">Nouveau Sudoku</string>
+
+    <string name="rename">Renommer</string>
+    <string name="delete">Supprimer</string>
+    <string name="delete_sudoku">Supprimer ce Sudoku?</string>
+
+    <!--Dialog-->
+    <string name="generate">Générer</string>
+    <string name="make_own">Créer</string>
+    <string name="_import">Importer</string>
+    <string name="easy">Facile</string>
+    <string name="medium">Moyen</string>
+    <string name="hard">Dur</string>
+    <string name="pick">Choisir</string>
+
+    <string name="completed_no_error_title">Terminé</string>
+    <string name="completed_error_title">Complété avec des fautes</string>
+    <string name="completed_error_message">Vous avez rempli le jeu, mais il y a des fauxtes.</string>
     <string name="dismiss">Fermer</string>
-    <string name="sudoku_done">Terminé</string>
-    <string name="time">Temps: %1$s</string>
-    <string name="resume">Reprendre</string>
-    <string name="no_solutions">Pas de solutions</string>
-    <string name="how_to_play">Comment jouer</string>
-    <string name="how_to_play_summary">Cliquez sur une case pour ajouter un chiffre et cliquez longtemps pour l\'enlever. Chaque ligne, colonne et rectangle ne peut contenir un chiffre qu\'une seule fois.</string>
+    <string name="show_errors">Afficher les fautes</string>
+
+    <string name="name">Nom</string>
+    <string name="time">Temps</string>
+    <string name="size">Taille</string>
+    <string name="difficulty">Difficulté</string>
+
+    <!--Main Activity-->
+    <string name="elapsed_time">Temps écoulé: %1$s</string>
+    <string name="current_time">Temps: %1$s</string>
+
+    <!--Others-->
+    <string name="select_file">Choisir le fichier</string>
+    <string name="successfully_imported">%s importé avec succès</string>
+    <string name="failed_to_import_game">Échec de l\'importation du jeu</string>
+
+    <string name="error">Erreur</string>
+    <string name="invalid_game">Jeu invalide</string>
+
+    <string name="no_solution">Pas de solution</string>
+    <string name="multiple_solutions">Multiples solutions</string>
+    <string name="game_added_to_list">Jeu ajouté à la liste</string>
+
+    <string name="_copy">" copie"</string>
+    <string name="_dev">" Dév"</string>
 
 </resources>
