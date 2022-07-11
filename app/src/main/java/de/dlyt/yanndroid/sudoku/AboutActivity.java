@@ -2,75 +2,115 @@ package de.dlyt.yanndroid.sudoku;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.preference.PreferenceManager;
 
-import com.google.android.material.button.MaterialButton;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
 
-import de.dlyt.yanndroid.oneui.layout.AboutPage;
-import de.dlyt.yanndroid.oneui.utils.ThemeUtil;
-import de.dlyt.yanndroid.sudoku.utils.Updater;
+import dev.oneuiproject.oneui.layout.AppInfoLayout;
 
-public class AboutActivity extends AppCompatActivity {
+public class AboutActivity extends AppCompatActivity implements AppInfoLayout.OnClickListener {
 
-    private AboutPage about_page;
-    private MaterialButton about_github;
+    private static final String GITHUB_URL = "https://github.com/Yanndroid/Sudoku";
+    //private static final String POEDITOR_URL = "https://poeditor.com/join/project/is9K6CJAaL";
+    private static final String DONATE_URL = "https://paypal.me/YanndroidDev";
+    private AppInfoLayout appInfoLayout;
+    private AppUpdateManager appUpdateManager;
+    private AppUpdateInfo appUpdateInfo;
+
     private int clicks = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new ThemeUtil(this);
         setContentView(R.layout.activity_about);
 
-        about_page = findViewById(R.id.about_page);
-        about_github = findViewById(R.id.about_github);
+        appUpdateManager = AppUpdateManagerFactory.create(this);
+        appInfoLayout = findViewById(R.id.appInfoLayout);
 
-        View version = about_page.findViewById(R.id.version);
+        View version = appInfoLayout.findViewById(R.id.app_info_version);
         version.setOnClickListener(v -> {
             clicks++;
             if (clicks > 5) {
                 clicks = 0;
-                SharedPreferences sharedPref_Settings = getSharedPreferences("de.dlyt.yanndroid.sudoku_preferences", Context.MODE_PRIVATE);
+                SharedPreferences sharedPref_Settings = PreferenceManager.getDefaultSharedPreferences(this);
                 sharedPref_Settings.edit().putBoolean("dev_enabled", !sharedPref_Settings.getBoolean("dev_enabled", false)).apply();
                 startActivity(new Intent().setClass(getApplicationContext(), SplashActivity.class));
             }
         });
 
         checkForUpdate();
+
+        appInfoLayout.setMainButtonClickListener(this);
+        ((AppCompatButton) findViewById(R.id.about_source_code)).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB_URL))));
+        //((AppCompatButton) findViewById(R.id.about_translations)).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(POEDITOR_URL))));
+        ((AppCompatButton) findViewById(R.id.about_donate)).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(DONATE_URL))));
     }
 
     private void checkForUpdate() {
-        Updater.checkForUpdate(this, new Updater.UpdateChecker() {
-            @Override
-            public void updateAvailable(boolean available, String url, String versionName) {
-                if (available) {
-                    about_page.setUpdateState(AboutPage.UPDATE_AVAILABLE);
-                    about_page.setUpdateButtonOnClickListener(v -> Updater.downloadAndInstall(getBaseContext(), url, versionName));
-                } else {
-                    about_page.setUpdateState(AboutPage.NO_UPDATE);
-                }
-            }
+        appInfoLayout.setStatus(AppInfoLayout.LOADING);
+        NetworkInfo networkInfo = ((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (!(networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected())) {
+            appInfoLayout.setStatus(AppInfoLayout.NO_CONNECTION);
+            return;
+        }
 
-            @Override
-            public void githubAvailable(String url) {
-                about_github.setVisibility(View.VISIBLE);
-                about_github.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))));
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                appInfoLayout.setStatus(AppInfoLayout.UPDATE_AVAILABLE);
+                this.appUpdateInfo = appUpdateInfo;
+            } else {
+                appInfoLayout.setStatus(AppInfoLayout.NO_UPDATE);
             }
-
-            @Override
-            public void noConnection() {
-                about_page.setUpdateState(AboutPage.NO_CONNECTION);
-                about_page.setRetryButtonOnClickListener(v -> {
-                    about_page.setUpdateState(AboutPage.LOADING);
-                    checkForUpdate();
-                });
-            }
+        }).addOnFailureListener(e -> {
+            e.printStackTrace();
+            appInfoLayout.setStatus(AppInfoLayout.NOT_UPDATEABLE);
         });
     }
 
+    @Override
+    public void onUpdateClicked(View v) {
+        if (appUpdateInfo == null) return;
+        try {
+            appUpdateManager.startUpdateFlowForResult(appUpdateInfo, AppUpdateType.IMMEDIATE, this, 6000);
+        } catch (IntentSender.SendIntentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRetryClicked(View v) {
+        checkForUpdate();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(dev.oneuiproject.oneui.R.menu.app_info_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == dev.oneuiproject.oneui.R.id.menu_app_info) {
+            appInfoLayout.openSettingsAppInfo();
+            return true;
+        }
+        return false;
+    }
 }

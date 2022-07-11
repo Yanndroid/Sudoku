@@ -1,6 +1,5 @@
 package de.dlyt.yanndroid.sudoku;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,9 +11,9 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
-import de.dlyt.yanndroid.oneui.layout.SplashView;
-import de.dlyt.yanndroid.oneui.utils.ThemeUtil;
+import dev.oneuiproject.oneui.layout.SplashLayout;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -22,16 +21,15 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        new ThemeUtil(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        SplashView splashView = findViewById(R.id.splash);
+        SplashLayout splashView = findViewById(R.id.splash);
 
-        if (getSharedPreferences("de.dlyt.yanndroid.sudoku_preferences", Context.MODE_PRIVATE).getBoolean("dev_enabled", false)) {
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dev_enabled", false)) {
             Spannable dev_text = new SpannableString(getString(R.string._dev));
             dev_text.setSpan(new ForegroundColorSpan(getColor(R.color.orange)), 0, dev_text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            ((TextView) splashView.findViewById(R.id.sesl_splash_text)).append(dev_text);
+            ((TextView) splashView.findViewById(R.id.oui_splash_text)).append(dev_text);
         }
 
         Handler handler = new Handler(Looper.getMainLooper());

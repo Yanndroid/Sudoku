@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.dlyt.yanndroid.oneui.layout.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<dev.oneuiproject.oneui.layout.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:drawer_icon="@drawable/ic_samsung_settings"
-    app:toolbar_title="@string/app_name"
+    app:title="@string/app_name"
     tools:context=".MainActivity">
 
-    <de.dlyt.yanndroid.oneui.view.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_behavior="@string/sesl_appbar_scrolling_view_behavior"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_location="main_content">
 
         <LinearLayout
@@ -22,11 +21,11 @@
             android:animateLayoutChanges="true"
             android:orientation="vertical">
 
-            <de.dlyt.yanndroid.oneui.view.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/game_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/item_background_color"
+                android:background="@color/oui_background_color"
                 android:foreground="@drawable/sudoku_view_fg"
                 android:scrollbars="none" />
 
@@ -39,51 +38,46 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <com.google.android.material.card.MaterialCardView
+                <dev.oneuiproject.oneui.widget.RoundLinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@color/oui_background_color"
+                    android:orientation="vertical"
+                    android:padding="15dp">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
+                    <androidx.appcompat.widget.AppCompatButton
+                        style="@style/ButtonStyle.Colored"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="15dp">
+                        android:layout_marginVertical="5dp"
+                        android:onClick="resumeGameTimer"
+                        android:text="@string/resume" />
 
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/ButtonStyle.Colored"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="5dp"
-                            android:onClick="resumeGameTimer"
-                            android:text="@string/resume" />
+                    <androidx.appcompat.widget.AppCompatButton
+                        style="@style/ButtonStyle.Colored"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="5dp"
+                        android:onClick="shareCurrentGame"
+                        android:text="@string/share" />
 
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/ButtonStyle.Colored"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="5dp"
-                            android:onClick="shareCurrentGame"
-                            android:text="@string/share" />
+                    <androidx.appcompat.widget.AppCompatButton
+                        style="@style/ButtonStyle.Colored"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="5dp"
+                        android:onClick="duplicateCurrentGame"
+                        android:text="@string/duplicate" />
 
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/ButtonStyle.Colored"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="5dp"
-                            android:onClick="duplicateCurrentGame"
-                            android:text="@string/duplicate" />
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
+                </dev.oneuiproject.oneui.widget.RoundLinearLayout>
 
             </LinearLayout>
         </LinearLayout>
 
-    </de.dlyt.yanndroid.oneui.view.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/viewInDrawer"
         layout="@layout/drawer_content" />
 
-</de.dlyt.yanndroid.oneui.layout.DrawerLayout>
+</dev.oneuiproject.oneui.layout.DrawerLayout>

@@ -4,7 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import de.dlyt.yanndroid.oneui.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
+
 
 public class DynamicViewPager extends ViewPager {
 

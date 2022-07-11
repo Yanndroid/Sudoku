@@ -11,15 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import de.dlyt.yanndroid.oneui.dialog.ProgressDialog;
-import de.dlyt.yanndroid.oneui.view.SeekBar;
 import de.dlyt.yanndroid.sudoku.R;
 import de.dlyt.yanndroid.sudoku.game.Game;
+import dev.oneuiproject.oneui.dialog.ProgressDialog;
+import dev.oneuiproject.oneui.utils.SeekBarUtils;
+import dev.oneuiproject.oneui.widget.HapticSeekBar;
 
 public class Tab_Generate extends Fragment {
 
     private NewSudokuDialog.DialogListener dialogListener;
-    private SeekBar difficulty_seekbar;
+    private HapticSeekBar difficulty_seekbar;
 
     public Tab_Generate(NewSudokuDialog.DialogListener dialogListener) {
         this.dialogListener = dialogListener;
@@ -35,8 +36,8 @@ public class Tab_Generate extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         difficulty_seekbar = view.findViewById(R.id.dialog_difficulty_seekbar);
+        SeekBarUtils.showTickMark(difficulty_seekbar, true);
         difficulty_seekbar.setSeamless(true);
-        difficulty_seekbar.setTickMark(getContext().getDrawable(R.drawable.seekbar_tick_mark));
         difficulty_seekbar.setMax(4);
         difficulty_seekbar.setProgress(difficulty_seekbar.getMax() / 2);
 
@@ -47,7 +48,7 @@ public class Tab_Generate extends Fragment {
     @SuppressLint("StaticFieldLeak")
     private void asyncNewGame(int size, int difficulty, int max) {
         ProgressDialog mLoadingDialog = new ProgressDialog(getContext());
-        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_CIRCLE_ONLY);
+        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_CIRCLE);
         mLoadingDialog.setCancelable(false);
         mLoadingDialog.show();
 

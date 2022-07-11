@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,17 +14,24 @@ import android.os.Environment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -37,23 +43,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import de.dlyt.yanndroid.oneui.dialog.AlertDialog;
-import de.dlyt.yanndroid.oneui.dialog.ProgressDialog;
-import de.dlyt.yanndroid.oneui.layout.DrawerLayout;
-import de.dlyt.yanndroid.oneui.layout.ToolbarLayout;
-import de.dlyt.yanndroid.oneui.menu.Menu;
-import de.dlyt.yanndroid.oneui.menu.MenuItem;
-import de.dlyt.yanndroid.oneui.sesl.recyclerview.GridLayoutManager;
-import de.dlyt.yanndroid.oneui.sesl.recyclerview.SeslLinearLayoutManager;
-import de.dlyt.yanndroid.oneui.sesl.utils.ReflectUtils;
-import de.dlyt.yanndroid.oneui.utils.ThemeUtil;
-import de.dlyt.yanndroid.oneui.view.OptionGroup;
-import de.dlyt.yanndroid.oneui.view.RecyclerView;
 import de.dlyt.yanndroid.sudoku.adapter.GamesListAdapter;
 import de.dlyt.yanndroid.sudoku.adapter.SudokuViewAdapter;
 import de.dlyt.yanndroid.sudoku.dialog.NewSudokuDialog;
 import de.dlyt.yanndroid.sudoku.game.Field;
 import de.dlyt.yanndroid.sudoku.game.Game;
+import dev.oneuiproject.oneui.dialog.ProgressDialog;
+import dev.oneuiproject.oneui.layout.DrawerLayout;
+import dev.oneuiproject.oneui.utils.internal.ReflectUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,8 +58,9 @@ public class MainActivity extends AppCompatActivity {
     public static boolean gameSettingChanged = false;
 
     private DrawerLayout drawerLayout;
-    private ToolbarLayout toolbarLayout;
-    private OptionGroup optionGroup;
+    private Menu toolbarMenu;
+    private LinearLayout playOption;
+    private LinearLayout solveOption;
 
     private Context context;
     private SharedPreferences sharedPref_Games;
@@ -79,98 +77,26 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout resume_button_layout;
     private ProgressDialog mLoadingDialog;
 
-    @SuppressLint("StaticFieldLeak")
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new ThemeUtil(this);
         setContentView(R.layout.activity_main);
         context = this;
         sharedPref_Games = getSharedPreferences("Games", Activity.MODE_PRIVATE);
-        sharedPref_Settings = getSharedPreferences("de.dlyt.yanndroid.sudoku_preferences", Context.MODE_PRIVATE);
+        sharedPref_Settings = PreferenceManager.getDefaultSharedPreferences(context);
 
         mLoadingDialog = new ProgressDialog(this);
-        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_CIRCLE_ONLY);
+        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_CIRCLE);
         mLoadingDialog.setCancelable(false);
 
         drawerLayout = findViewById(R.id.drawer_view);
-        drawerLayout.setDrawerButtonTooltip(getString(R.string.action_settings));
+        drawerLayout.setDrawerButtonIcon(getDrawable(R.drawable.ic_oui_settings_outline));
+        drawerLayout.setDrawerButtonTooltip(getString(R.string.settings));
         drawerLayout.setDrawerButtonOnClickListener(v -> startActivity(new Intent().setClass(context, SettingsActivity.class)));
 
-        toolbarLayout = drawerLayout.getToolbarLayout();
-        toolbarLayout.setOnToolbarMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                //play menu
-                case R.id.menu_undo:
-                    if (current_game == null) break;
-                    current_game.revertLastChange(game_adapter);
-                    break;
-                case R.id.menu_pause:
-                    toggleGameTimer();
-                    break;
-                case R.id.menu_duplicate:
-                    duplicateCurrentGame(null);
-                    break;
-                case R.id.menu_show_errors:
-                    showErrors();
-                    break;
-                case R.id.menu_solve:
-                    pauseGameTimer();
-                    popupGame(current_game.getSolutionGame());
-                    break;
-                case R.id.menu_share:
-                    pauseGameTimer();
-                    shareCurrentGame(null);
-                    break;
-
-                //solve menu
-                case R.id.menu_clear:
-                    loadEmptyGame();
-                    break;
-                case R.id.menu_solver_solve:
-                    mLoadingDialog.show();
-                    new AsyncTask<Void, Void, Object>() {
-                        @Override
-                        protected Object doInBackground(Void... voids) {
-                            return current_game.makeSolutionFromEdit();
-                        }
-
-                        @Override
-                        protected void onPostExecute(Object o) {
-                            if (o instanceof Integer)
-                                Toast.makeText(context, (int) o == 0 ? R.string.no_solution : R.string.multiple_solutions, Toast.LENGTH_SHORT).show();
-                            else popupGame((Game) o);
-                            mLoadingDialog.dismiss();
-                        }
-                    }.execute();
-                    break;
-                case R.id.menu_save:
-                    mLoadingDialog.show();
-                    new AsyncTask<Void, Void, Object>() {
-                        @Override
-                        protected Object doInBackground(Void... voids) {
-                            return current_game.makeGameFromEdit();
-                        }
-
-                        @Override
-                        protected void onPostExecute(Object o) {
-                            if (o instanceof Integer)
-                                Toast.makeText(context, (int) o == 0 ? R.string.no_solution : R.string.multiple_solutions, Toast.LENGTH_SHORT).show();
-                            else {
-                                ((Game) o).setName("Sudoku " + (games.size() + 1));
-                                addGameToList((Game) o);
-                                Toast.makeText(context, getString(R.string.game_added_to_list), Toast.LENGTH_SHORT).show();
-                            }
-                            mLoadingDialog.dismiss();
-                        }
-                    }.execute();
-                    break;
-            }
-            return true;
-        });
-
         resume_button_layout = findViewById(R.id.resume_button_layout);
-        toolbarLayout.getAppBarLayout().addOnOffsetChangedListener((layout, verticalOffset) -> {
+        drawerLayout.getAppBarLayout().addOnOffsetChangedListener((layout, verticalOffset) -> {
             int totalScrollRange = layout.getTotalScrollRange();
             int inputMethodWindowVisibleHeight = (int) ReflectUtils.genericInvokeMethod(InputMethodManager.class, getSystemService(INPUT_METHOD_SERVICE), "getInputMethodWindowVisibleHeight");
             if (resume_button_layout != null) {
@@ -182,17 +108,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        optionGroup = findViewById(R.id.optionGroup);
-        optionGroup.setOnOptionButtonClickListener((optionButton, i, i1) -> {
+        drawerLayout.getToolbar().inflateMenu(R.menu.main_menu);
+        toolbarMenu = drawerLayout.getToolbar().getMenu();
+        setSupportActionBar(null);
+
+        playOption = findViewById(R.id.play_sudoku);
+        solveOption = findViewById(R.id.solve_sudoku);
+
+        playOption.setOnClickListener(v -> {
+            playOption.setSelected(true);
+            solveOption.setSelected(false);
             drawerLayout.setDrawerOpen(false, true);
-            switch (i) {
-                case R.id.play_sudoku:
-                    loadLastGame();
-                    break;
-                case R.id.solve_sudoku:
-                    loadEmptyGame();
-                    break;
-            }
+            loadLastGame();
+        });
+
+        solveOption.setOnClickListener(v -> {
+            solveOption.setSelected(true);
+            playOption.setSelected(false);
+            drawerLayout.setDrawerOpen(false, true);
+            loadEmptyGame();
         });
 
         game_recycler = findViewById(R.id.game_recycler);
@@ -207,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         if (importedGame != null) {
             addGameToList(importedGame);
             loadGame(importedGame);
-        } else if (games.size() == 0) {
+        } else if (games.isEmpty()) {
             newSudokuDialog(false);
         } else if ("de.dlyt.yanndroid.sudoku.NEW_SUDOKU".equals(getIntent().getAction())) {
             newSudokuDialog(true);
@@ -217,29 +151,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initDrawer() {
-        ((ImageView) findViewById(R.id.newSudoku).findViewById(R.id.optionbutton_icon)).setImageTintList(ColorStateList.valueOf(getColor(R.color.green)));
-
         games_list = findViewById(R.id.games_list);
-        SeslLinearLayoutManager llm = new SeslLinearLayoutManager(this);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setStackFromEnd(true);
         llm.setReverseLayout(true);
         games_list.setLayoutManager(llm);
         gamesListAdapter = new GamesListAdapter(context, games, new GamesListAdapter.GamesListListener() {
             @Override
             public void onNameChange(Game game) {
-                if (game == current_game) toolbarLayout.setTitle(current_game.getName());
+                if (game == current_game) drawerLayout.setTitle(current_game.getName());
             }
 
             @Override
             public void onGameDeleted(Game game) {
                 if (game == current_game) {
                     current_game.stopTimer();
-                    toolbarLayout.setTitle(getString(R.string.app_name));
-                    toolbarLayout.setSubtitle(null);
+                    drawerLayout.setTitle(getString(R.string.app_name));
+                    setSubtitle(null);
                     current_game = null;
                     game_recycler.setAdapter(null);
 
-                    toolbarLayout.inflateToolbarMenu(new Menu());
+                    showMenu(false, false, false);
                     resume_button_layout.setVisibility(View.GONE);
                 }
             }
@@ -247,6 +179,10 @@ public class MainActivity extends AppCompatActivity {
         games_list.setAdapter(gamesListAdapter);
     }
 
+    private void setSubtitle(CharSequence subtitle) {
+        drawerLayout.setExpandedSubtitle(subtitle);
+        drawerLayout.setCollapsedSubtitle(drawerLayout.isExpandable() ? null : subtitle);
+    }
 
     public void newSudokuDialog(View view) {
         drawerLayout.setDrawerOpen(false, true);
@@ -267,6 +203,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadLastGame() {
         int index = sharedPref_Games.getInt("last_game_index", games.size() - 1);
+        if (games.isEmpty()) {
+            newSudokuDialog(false);
+            return;
+        }
         if (index == -1 || index >= games.size()) index = games.size() - 1;
         loadGame(games.get(index));
     }
@@ -277,12 +217,12 @@ public class MainActivity extends AppCompatActivity {
         if (game == current_game) return;
         if (current_game != null) current_game.stopTimer();
 
-        toolbarLayout.inflateToolbarMenu(R.menu.main_game);
-        optionGroup.setSelectedOptionButton((Integer) R.id.play_sudoku);
+        playOption.setSelected(true);
+        solveOption.setSelected(false);
 
         current_game = game;
-        toolbarLayout.setTitle(game.getName());
-        toolbarLayout.setSubtitle(getString(current_game.isCompleted() ? R.string.elapsed_time : R.string.current_time, current_game.getTimeString()));
+        drawerLayout.setTitle(game.getName());
+        setSubtitle(getString(current_game.isCompleted() ? R.string.elapsed_time : R.string.current_time, current_game.getTimeString()));
 
         //recycler
         game_recycler.setLayoutManager(new GridLayoutManager(context, game.getSize()));
@@ -292,22 +232,22 @@ public class MainActivity extends AppCompatActivity {
         game_recycler.seslSetLastRoundedCorner(true);
 
         //game
-        toolbarLayout.getToolbarMenu().setGroupVisible(R.id.playable_group, !current_game.isCompleted());
+        showMenu(false, true, !current_game.isCompleted());
         current_game.setGameListener(new Game.GameListener() {
             @Override
             public void onHistoryChange(int length) {
-                toolbarLayout.getToolbarMenu().findItem(R.id.menu_undo).setEnabled(current_game.hasHistory());
+                toolbarMenu.findItem(R.id.menu_undo).setEnabled(current_game.hasHistory());
             }
 
             @Override
             public void onCompleted() {
                 gamesListAdapter.notifyChanged();
-                toolbarLayout.getToolbarMenu().setGroupVisible(R.id.playable_group, !current_game.isCompleted());
+                showMenu(false, true, !current_game.isCompleted());
             }
 
             @Override
             public void onTimeChanged(String time) {
-                runOnUiThread(() -> toolbarLayout.setSubtitle(getString(R.string.current_time, time)));
+                runOnUiThread(() -> setSubtitle(getString(R.string.current_time, time)));
             }
         });
 
@@ -315,24 +255,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadEmptyGame() {
+        if (current_game != null) current_game.stopTimer();
+
         drawerLayout.setDrawerOpen(false, true);
         resume_button_layout.setVisibility(View.GONE);
         game_recycler.setVisibility(View.VISIBLE);
 
-        Game game = new Game(9);
+        showMenu(true, false, false);
+        drawerLayout.setTitle(getString(R.string.solve_sudoku));
+        setSubtitle(null);
 
-        if (game == current_game) return;
-        if (current_game != null) current_game.stopTimer();
-
-        toolbarLayout.inflateToolbarMenu(R.menu.main_solver);
-        toolbarLayout.setTitle(getString(R.string.solve_sudoku));
-        toolbarLayout.setSubtitle(null);
-
-        current_game = game;
+        current_game = new Game(9);
 
         //recycler
-        game_recycler.setLayoutManager(new GridLayoutManager(context, game.getSize()));
-        game_adapter = new SudokuViewAdapter(context, game);
+        game_recycler.setLayoutManager(new GridLayoutManager(context, current_game.getSize()));
+        game_adapter = new SudokuViewAdapter(context, current_game);
         game_recycler.setAdapter(game_adapter);
         game_recycler.seslSetFillBottomEnabled(true);
         game_recycler.seslSetLastRoundedCorner(true);
@@ -349,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
         PopupWindow popupWindow = new PopupWindow(game_view, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         popupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
         popupWindow.setOutsideTouchable(true);
-        popupWindow.setElevation(TypedValue.applyDimension(1, 12.0F, this.context.getResources().getDisplayMetrics()));
+        popupWindow.setElevation(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12.0F, this.context.getResources().getDisplayMetrics()));
         if (popupWindow.isClippingEnabled()) popupWindow.setClippingEnabled(false);
         popupWindow.showAtLocation(game_recycler, Gravity.CENTER, 0, 0);
 
@@ -449,11 +386,11 @@ public class MainActivity extends AppCompatActivity {
         if (!(current_game == null || current_game.isCompleted() || current_game.isEditMode())) {
             current_game.startTimer(1500);
 
-            MenuItem item_pause_play = toolbarLayout.getToolbarMenu().findItem(R.id.menu_pause);
-            item_pause_play.setIcon(getDrawable(R.drawable.ic_samsung_pause));
-            item_pause_play.setTitle(getString(R.string.resume));
-            toolbarLayout.getToolbarMenu().findItem(R.id.menu_undo).setEnabled(current_game.hasHistory());
-            toolbarLayout.getToolbarMenu().findItem(R.id.menu_show_errors).setEnabled(true);
+            MenuItem item_pause_play = toolbarMenu.findItem(R.id.menu_pause);
+            item_pause_play.setIcon(getDrawable(R.drawable.ic_oui_control_pause));
+            item_pause_play.setTitle(getString(R.string.pause));
+            toolbarMenu.findItem(R.id.menu_undo).setEnabled(current_game.hasHistory());
+            toolbarMenu.findItem(R.id.menu_show_errors).setEnabled(true);
         }
         game_recycler.setVisibility(View.VISIBLE);
     }
@@ -463,11 +400,11 @@ public class MainActivity extends AppCompatActivity {
         game_recycler.setVisibility(View.GONE);
         current_game.stopTimer();
 
-        MenuItem item_pause_play = toolbarLayout.getToolbarMenu().findItem(R.id.menu_pause);
-        item_pause_play.setIcon(getDrawable(R.drawable.ic_samsung_play));
-        item_pause_play.setTitle(getString(R.string.pause));
-        toolbarLayout.getToolbarMenu().findItem(R.id.menu_undo).setEnabled(false);
-        toolbarLayout.getToolbarMenu().findItem(R.id.menu_show_errors).setEnabled(false);
+        MenuItem item_pause_play = toolbarMenu.findItem(R.id.menu_pause);
+        item_pause_play.setIcon(getDrawable(R.drawable.ic_oui_control_play));
+        item_pause_play.setTitle(getString(R.string.resume));
+        toolbarMenu.findItem(R.id.menu_undo).setEnabled(false);
+        toolbarMenu.findItem(R.id.menu_show_errors).setEnabled(false);
 
         resume_button_layout.setVisibility(View.VISIBLE);
     }
@@ -522,5 +459,85 @@ public class MainActivity extends AppCompatActivity {
             gameSettingChanged = false;
             game_recycler.setAdapter(new SudokuViewAdapter(context, current_game));
         }
+    }
+
+    private void showMenu(boolean solver, boolean game, boolean playable) {
+        toolbarMenu.setGroupVisible(R.id.solve_menu, solver);
+        toolbarMenu.setGroupVisible(R.id.menu_game, game);
+        toolbarMenu.setGroupVisible(R.id.menu_game_playable, playable);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            //play menu
+            case R.id.menu_undo:
+                if (current_game == null) break;
+                current_game.revertLastChange(game_adapter);
+                break;
+            case R.id.menu_pause:
+                toggleGameTimer();
+                break;
+            case R.id.menu_duplicate:
+                duplicateCurrentGame(null);
+                break;
+            case R.id.menu_show_errors:
+                showErrors();
+                break;
+            case R.id.menu_solve:
+                pauseGameTimer();
+                popupGame(current_game.getSolutionGame());
+                break;
+            case R.id.menu_share:
+                pauseGameTimer();
+                shareCurrentGame(null);
+                break;
+
+            //solve menu
+            case R.id.menu_clear:
+                loadEmptyGame();
+                break;
+            case R.id.menu_solver_solve:
+                mLoadingDialog.show();
+                new AsyncTask<Void, Void, Object>() {
+                    @Override
+                    protected Object doInBackground(Void... voids) {
+                        return current_game.makeSolutionFromEdit(true);
+                    }
+
+                    @Override
+                    protected void onPostExecute(Object o) {
+                        if (o instanceof Integer)
+                            Toast.makeText(context, R.string.no_solution, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, (int) o == 0 ? R.string.no_solution : R.string.multiple_solutions, Toast.LENGTH_SHORT).show();
+                        else popupGame((Game) o);
+                        mLoadingDialog.dismiss();
+                    }
+                }.execute();
+                break;
+            case R.id.menu_save:
+                mLoadingDialog.show();
+                new AsyncTask<Void, Void, Object>() {
+                    @Override
+                    protected Object doInBackground(Void... voids) {
+                        return current_game.makeGameFromEdit();
+                    }
+
+                    @Override
+                    protected void onPostExecute(Object o) {
+                        if (o instanceof Integer)
+                            Toast.makeText(context, (int) o == 0 ? R.string.no_solution : R.string.multiple_solutions, Toast.LENGTH_SHORT).show();
+                        else {
+                            ((Game) o).setName("Sudoku " + (games.size() + 1));
+                            addGameToList((Game) o);
+                            Toast.makeText(context, getString(R.string.game_added_to_list), Toast.LENGTH_SHORT).show();
+                        }
+                        mLoadingDialog.dismiss();
+                    }
+                }.execute();
+                break;
+        }
+        return true;
     }
 }

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:alpha="0.9"
     android:background="@drawable/sesl_menu_popup_background"
-    android:backgroundTint="@color/item_background_color"
+    android:backgroundTint="@color/oui_background_color"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="15dp">
@@ -20,6 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:src="@drawable/ic_samsung_drawer" />
+        android:src="@drawable/ic_oui_drawer" />
 
 </LinearLayout>

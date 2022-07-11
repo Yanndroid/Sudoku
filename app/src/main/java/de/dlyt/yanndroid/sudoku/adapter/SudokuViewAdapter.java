@@ -1,12 +1,13 @@
 package de.dlyt.yanndroid.sudoku.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 
-import de.dlyt.yanndroid.oneui.view.RecyclerView;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import de.dlyt.yanndroid.sudoku.game.FieldView;
 import de.dlyt.yanndroid.sudoku.game.Game;
 
@@ -28,7 +29,7 @@ public class SudokuViewAdapter extends RecyclerView.Adapter<SudokuViewAdapter.Vi
         this.game = game;
         this.animateLayoutChanges_FieldView = animateLayoutChanges_FieldView;
         fieldViews = new FieldView[getItemCount()];
-        sharedPreferences = context.getSharedPreferences("de.dlyt.yanndroid.sudoku_preferences", Activity.MODE_PRIVATE);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public FieldView getFieldView(int position) {

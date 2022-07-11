@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/dialog_picker_pick"
             style="@style/ButtonStyle.Colored"
             android:layout_width="0dp"
@@ -19,14 +19,14 @@
             android:layout_weight="1"
             android:text="@string/pick" />
 
-        <com.google.android.material.button.MaterialButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/dialog_picker_done"
             style="@style/ButtonStyle.Colored"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:text="@string/sesl_done"
+            android:text="@string/done"
             android:visibility="gone" />
 
     </LinearLayout>

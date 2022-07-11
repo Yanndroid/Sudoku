@@ -2,12 +2,13 @@
 <resources>
 
     <!--Settings-->
-    <string name="theme">Thème</string>
+    <string name="settings">Paramètres</string>
+    <!--<string name="theme">Thème</string>
     <string name="light">Clair</string>
     <string name="dark">Sombre</string>
     <string name="system_default">Système</string>
     <string name="theme_color">Couleur du thème</string>
-    <string name="theme_color_summary">Change la couleur de l\'application.</string>
+    <string name="theme_color_summary">Change la couleur de l\'application.</string>-->
 
     <string name="general">Général</string>
     <string name="keep_screen_on">Gardez l\'écran allumé</string>
@@ -18,10 +19,10 @@
     <string name="grid_box_colors_summary">Activez ou désactivez la couleur des cases.</string>
     <string name="invert_colors">Inverser les couleurs</string>
     <string name="invert_colors_summary">Inversez la couleur des numéros prédéfinis et ajoutés par l\'utilisateur.</string>
-    <string name="hint_color">Couleur des numéros d\'indices</string>
+    <!--<string name="hint_color">Couleur des numéros d\'indices</string>
     <string name="hint_color_summary">Changer la couleur des numéros d\'indice.</string>
     <string name="error_color">Couleur d\'arrière-plan des fautes</string>
-    <string name="error_color_summary">Changez la couleur des fausses cases.</string>
+    <string name="error_color_summary">Changez la couleur des fausses cases.</string>-->
 
     <string name="dev_options">Options de développeur</string>
     <string name="secure_flag">Secure Flag</string>
@@ -31,6 +32,7 @@
     <string name="how_to_play_summary">Appuyez sur une case pour ajouter ou supprimer le numéro et les notes, ou pour obtenir la solution pour cette case. Vous pouvez également cliquer longuement dessus pour effacer le numéro. Chaque ligne, colonne et rectangle ne peut contenir un chiffre qu\'une seule fois.</string>
     <string name="restore_all_settings">Restaurer tous les paramètres</string>
     <string name="about_sudoku">À propos de Sudoku</string>
+    <string name="translations">Traductions</string>
 
     <!--Game menu-->
     <string name="undo">Défaire</string>
@@ -67,6 +69,8 @@
     <string name="medium">Moyen</string>
     <string name="hard">Dur</string>
     <string name="pick">Choisir</string>
+    <string name="done">Procéder</string>
+    <string name="cancel">Annuler</string>
 
     <string name="completed_no_error_title">Terminé</string>
     <string name="completed_error_title">Complété avec des fautes</string>

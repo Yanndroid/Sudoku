@@ -21,14 +21,14 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.stream.Collectors;
 
-import de.dlyt.yanndroid.oneui.dialog.AlertDialog;
-import de.dlyt.yanndroid.oneui.sesl.widget.ToolbarImageButton;
 import de.dlyt.yanndroid.sudoku.R;
 import de.dlyt.yanndroid.sudoku.adapter.SudokuViewAdapter;
 import de.dlyt.yanndroid.sudoku.utils.PropertiesListView;
@@ -133,7 +133,7 @@ public class FieldView extends LinearLayout {
             propertiesListView.addLine(context.getString(R.string.time), game.getTimeString());
             propertiesListView.addLine(context.getString(R.string.size), game.getSize() + "×" + game.getSize());
             propertiesListView.addLine(context.getString(R.string.difficulty), String.valueOf(game.getDifficulty()));
-            int padding = context.getResources().getDimensionPixelSize(R.dimen.rounded_corner_size);
+            int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, getResources().getDisplayMetrics());
             propertiesListView.setPadding(padding, 0, padding, 0);
             new AlertDialog.Builder(context)
                     .setTitle(R.string.completed_no_error_title)
@@ -147,7 +147,7 @@ public class FieldView extends LinearLayout {
         if (error)
             setBackgroundColor(sharedPreferences.getInt("error_color", context.getColor(R.color.sesl_error_color)));
         else if (isColored)
-            setBackgroundColor(getResources().getColor(R.color.sesl_control_color_normal, context.getTheme()));
+            setBackgroundColor(getResources().getColor(R.color.control_color_normal, context.getTheme()));
         else setBackgroundColor(Color.TRANSPARENT);
     }
 
@@ -213,7 +213,7 @@ public class FieldView extends LinearLayout {
         popupWindow.setOnDismissListener(() -> setSelected(false));
 
         //buttons
-        ToolbarImageButton popup_notes = popupView.findViewById(R.id.popup_notes);
+        AppCompatImageButton popup_notes = popupView.findViewById(R.id.popup_notes);
         popup_notes.setTooltipText(context.getString(R.string.notes));
         popup_notes.setVisibility(game.isEditMode() ? GONE : VISIBLE);
         popup_notes.setOnClickListener(v -> {
@@ -221,7 +221,7 @@ public class FieldView extends LinearLayout {
             showNotesPopup();
         });
 
-        ToolbarImageButton popup_remove = popupView.findViewById(R.id.popup_remove);
+        AppCompatImageButton popup_remove = popupView.findViewById(R.id.popup_remove);
         popup_remove.setTooltipText(context.getString(R.string.remove));
         popup_remove.setVisibility(field.getValue() == null ? GONE : VISIBLE);
         popup_remove.setOnClickListener(v -> {
@@ -229,7 +229,7 @@ public class FieldView extends LinearLayout {
             setValue(null);
         });
 
-        ToolbarImageButton popup_hint = popupView.findViewById(R.id.popup_hint);
+        AppCompatImageButton popup_hint = popupView.findViewById(R.id.popup_hint);
         popup_hint.setTooltipText(context.getString(R.string.hint));
         popup_hint.setVisibility(game.isEditMode() ? GONE : VISIBLE);
         popup_hint.setOnClickListener(v -> {

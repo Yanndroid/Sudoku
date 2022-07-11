@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <de.dlyt.yanndroid.oneui.view.TabLayout
+    <dev.oneuiproject.oneui.widget.MarginsTabLayout
         android:id="@+id/dialog_tabLayout"
         android:layout_width="match_parent"
         android:layout_height="60.0dip" />

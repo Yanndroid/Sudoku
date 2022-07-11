@@ -4,20 +4,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <de.dlyt.yanndroid.oneui.view.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/game_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/sudoku_view_fg"
         android:scrollbars="none" />
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/dialog_picker_done"
         style="@style/ButtonStyle.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="26dp"
         android:layout_marginVertical="10dp"
-        android:text="@string/sesl_done" />
+        android:text="@string/done" />
 
 </LinearLayout>

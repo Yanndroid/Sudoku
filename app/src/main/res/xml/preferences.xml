@@ -1,25 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.dlyt.yanndroid.oneui.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <PreferenceCategory android:title="@string/theme">
-        <HorizontalRadioPreference
-            android:key="dark_mode"
-            app:entries="@array/preferences_darkmode_entries"
-            app:entriesImage="@array/preferences_darkmode_entries_image"
-            app:entryValues="@array/preferences_darkmode_values"
-            app:viewType="image" />
-        <SwitchPreference
-            android:key="dark_mode_auto"
-            android:title="@string/system_default" />
-
-        <ColorPickerPreference
-            android:key="theme_color"
-            android:summary="@string/theme_color_summary"
-            android:title="@string/theme_color"
-            app:pickerType="classic" />
-    </PreferenceCategory>
-
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/general">
         <SwitchPreference
@@ -42,7 +22,7 @@
             android:summary="@string/invert_colors_summary"
             android:title="@string/invert_colors" />
 
-        <ColorPickerPreference
+        <!--<ColorPickerPreference
             android:key="hint_color"
             android:summary="@string/hint_color_summary"
             android:title="@string/hint_color"
@@ -52,7 +32,7 @@
             android:key="error_color"
             android:summary="@string/error_color_summary"
             android:title="@string/error_color"
-            app:pickerType="classic" />
+            app:pickerType="classic" />-->
     </PreferenceCategory>
 
 
@@ -85,4 +65,4 @@
         </PreferenceScreen>
     </PreferenceCategory>
 
-</de.dlyt.yanndroid.oneui.preference.PreferenceScreen>
+</PreferenceScreen>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group
+        android:id="@+id/menu_game_playable"
+        android:visible="false">
+        <item
+            android:id="@+id/menu_undo"
+            android:icon="@drawable/ic_oui_undo"
+            android:title="@string/undo"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/menu_pause"
+            android:icon="@drawable/ic_oui_control_pause"
+            android:title="@string/pause"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/menu_show_errors"
+            android:title="@string/show_errors"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/menu_solve"
+            android:title="@string/solution"
+            app:showAsAction="never" />
+    </group>
+
+    <group
+        android:id="@+id/menu_game"
+        android:visible="false">
+        <item
+            android:id="@+id/menu_duplicate"
+            android:title="@string/duplicate"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/menu_share"
+            android:title="@string/share"
+            app:showAsAction="never" />
+    </group>
+
+    <group
+        android:id="@+id/solve_menu"
+        android:visible="false">
+        <item
+            android:id="@+id/menu_clear"
+            android:icon="@drawable/ic_oui_close"
+            android:title="@string/clear"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/menu_solver_solve"
+            android:icon="@drawable/ic_oui_unlock_outline"
+            android:title="@string/solution"
+            app:showAsAction="always" />
+
+        <item
+            android:id="@+id/menu_save"
+            android:icon="@drawable/ic_oui_save_outline"
+            android:title="@string/save"
+            app:showAsAction="always" />
+    </group>
+
+</menu>

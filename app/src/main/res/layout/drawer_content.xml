@@ -7,39 +7,106 @@
     android:orientation="vertical"
     app:layout_location="drawer_panel">
 
-    <de.dlyt.yanndroid.oneui.view.OptionGroup
-        android:id="@+id/optionGroup"
+    <LinearLayout
+        android:id="@+id/play_sudoku"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:selectedOptionButton="@id/play_sudoku">
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/drawer_item_selector"
+        android:foreground="@drawable/drawer_item_list_ripple"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp">
 
-        <de.dlyt.yanndroid.oneui.view.OptionButton
-            android:id="@+id/play_sudoku"
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@drawable/ic_samsung_game"
-            app:text="@string/play_sudoku" />
+            android:src="@drawable/ic_oui_game" />
 
-        <de.dlyt.yanndroid.oneui.view.OptionButton
-            android:id="@+id/solve_sudoku"
-            android:layout_width="match_parent"
+        <TextView
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:icon="@drawable/ic_samsung_unlock"
-            app:text="@string/solve_sudoku" />
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:paddingStart="15dp"
+            android:singleLine="true"
+            android:text="@string/play_sudoku"
+            android:textAlignment="viewStart"
+            android:textSize="18sp" />
+    </LinearLayout>
 
-    </de.dlyt.yanndroid.oneui.view.OptionGroup>
+    <LinearLayout
+        android:id="@+id/solve_sudoku"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/drawer_item_selector"
+        android:foreground="@drawable/drawer_item_list_ripple"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingVertical="10dp"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_oui_unlock_outline" />
+
+        <TextView
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:paddingStart="15dp"
+            android:singleLine="true"
+            android:text="@string/solve_sudoku"
+            android:textAlignment="viewStart"
+            android:textSize="18sp" />
+    </LinearLayout>
 
     <View style="@style/DrawerDividerStyle" />
 
-    <de.dlyt.yanndroid.oneui.view.OptionButton
-        android:id="@+id/newSudoku"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/drawer_item_list_ripple"
+        android:gravity="center"
         android:onClick="newSudokuDialog"
-        app:icon="@drawable/ic_samsung_plus"
-        app:text="@string/new_sudoku" />
+        android:orientation="horizontal"
+        android:paddingVertical="10dp"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp">
 
-    <de.dlyt.yanndroid.oneui.view.RecyclerView
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_oui_add"
+            android:tint="@color/green" />
+
+        <TextView
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:paddingStart="15dp"
+            android:singleLine="true"
+            android:text="@string/new_sudoku"
+            android:textAlignment="viewStart"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/games_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

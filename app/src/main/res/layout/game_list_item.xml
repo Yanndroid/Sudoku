@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?selectableItemBackground"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:background="@drawable/drawer_item_list_ripple"
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingVertical="10dp"
-    android:paddingStart="30dp"
-    android:paddingEnd="15dp">
+    android:paddingStart="18dp"
+    android:paddingEnd="10dp">
 
     <ImageView
         android:id="@+id/item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_samsung_time"
-        app:tint="@color/drawer_icon_color" />
+        android:src="@drawable/ic_oui_time" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -24,7 +24,7 @@
         android:orientation="vertical"
         android:paddingStart="15dp">
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:id="@+id/item_text"
             style="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
             android:textAlignment="viewStart"
             android:textSize="18sp" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <TextView
             android:id="@+id/item_time"
             style="?android:attr/textAppearanceSmall"
             android:layout_width="wrap_content"
@@ -46,24 +46,22 @@
     </LinearLayout>
 
 
-    <de.dlyt.yanndroid.oneui.sesl.widget.ToolbarImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/item_rename"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="?selectableItemBackgroundBorderless"
         android:paddingHorizontal="8dp"
-        android:src="@drawable/ic_samsung_rename"
-        android:tooltipText="@string/rename"
-        app:tint="@color/drawer_icon_color" />
+        android:src="@drawable/ic_oui_edit_outline"
+        android:tooltipText="@string/rename" />
 
-    <de.dlyt.yanndroid.oneui.sesl.widget.ToolbarImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/item_delete"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="?selectableItemBackgroundBorderless"
         android:paddingHorizontal="8dp"
-        android:src="@drawable/ic_samsung_delete"
-        android:tooltipText="@string/delete"
-        app:tint="@color/drawer_icon_color" />
+        android:src="@drawable/ic_oui_delete_outline"
+        android:tooltipText="@string/delete" />
 
 </LinearLayout>

@@ -7,14 +7,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.google.android.material.textview.MaterialTextView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import de.dlyt.yanndroid.oneui.dialog.AlertDialog;
-import de.dlyt.yanndroid.oneui.sesl.widget.ToolbarImageButton;
-import de.dlyt.yanndroid.oneui.view.RecyclerView;
 import de.dlyt.yanndroid.sudoku.MainActivity;
 import de.dlyt.yanndroid.sudoku.R;
 import de.dlyt.yanndroid.sudoku.game.Game;
@@ -74,16 +74,16 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.View
         holder.item_time.setText(context.getString(R.string.current_time, game.getTimeString()));
 
         if (position == bestIndex) {
-            holder.item_icon.setImageDrawable(context.getDrawable(de.dlyt.yanndroid.oneui.R.drawable.ic_samsung_crown));
+            holder.item_icon.setImageDrawable(context.getDrawable(R.drawable.ic_oui_crown_outline));
             holder.item_icon.setColorFilter(context.getColor(R.color.yellow));
         } else if (position == worstIndex) {
-            holder.item_icon.setImageDrawable(context.getDrawable(de.dlyt.yanndroid.oneui.R.drawable.ic_samsung_crown));
+            holder.item_icon.setImageDrawable(context.getDrawable(R.drawable.ic_oui_crown_outline));
             holder.item_icon.setColorFilter(context.getColor(R.color.red));
         } else if (game.isCompleted()) {
-            holder.item_icon.setImageDrawable(context.getDrawable(de.dlyt.yanndroid.oneui.R.drawable.ic_samsung_selected));
+            holder.item_icon.setImageDrawable(context.getDrawable(R.drawable.ic_oui_selected));
             holder.item_icon.setColorFilter(null);
         } else {
-            holder.item_icon.setImageDrawable(context.getDrawable(de.dlyt.yanndroid.oneui.R.drawable.ic_samsung_time));
+            holder.item_icon.setImageDrawable(context.getDrawable(R.drawable.ic_oui_time));
             holder.item_icon.setColorFilter(null);
         }
 
@@ -102,7 +102,7 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.View
             new AlertDialog.Builder(context)
                     .setTitle(game.getName())
                     .setView(container)
-                    .setNegativeButton(R.string.sesl_cancel, null)
+                    .setNegativeButton(R.string.cancel, null)
                     .setPositiveButton(R.string.rename, (dialog, which) -> {
                         CharSequence cSName = editText.getText();
                         String sName = cSName.length() != 0 ? cSName.toString() : game.getName();
@@ -116,7 +116,7 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.View
             new AlertDialog.Builder(context)
                     .setTitle(game.getName())
                     .setMessage(R.string.delete_sudoku)
-                    .setNegativeButton(R.string.sesl_cancel, null)
+                    .setNegativeButton(R.string.cancel, null)
                     .setPositiveButton(R.string.delete, (dialog, which) -> {
                         games.remove(position);
                         /*notifyItemRemoved(position);
@@ -127,9 +127,7 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.View
                     .show();
         });
 
-
-        holder.itemView.setOnClickListener(v -> ((MainActivity) context).loadGame(games.get(position)));
-
+        holder.itemView.setOnClickListener(v -> ((MainActivity) context).loadGame(games.get(holder.getAdapterPosition())));
     }
 
     @Override
@@ -146,9 +144,8 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView item_icon;
-        private ToolbarImageButton item_rename, item_delete;
-        private MaterialTextView item_text, item_time;
-
+        private AppCompatImageButton item_rename, item_delete;
+        private TextView item_text, item_time;
 
         public ViewHolder(View view) {
             super(view);

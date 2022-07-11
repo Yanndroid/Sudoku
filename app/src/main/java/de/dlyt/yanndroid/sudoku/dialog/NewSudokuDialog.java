@@ -5,10 +5,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import de.dlyt.yanndroid.oneui.dialog.AlertDialog;
-import de.dlyt.yanndroid.oneui.view.TabLayout;
+import com.google.android.material.tabs.TabLayout;
+
 import de.dlyt.yanndroid.sudoku.R;
 import de.dlyt.yanndroid.sudoku.adapter.DialogViewPagerAdapter;
 import de.dlyt.yanndroid.sudoku.game.Game;
@@ -37,7 +38,6 @@ public class NewSudokuDialog extends DialogFragment {
         viewPager.setAdapter(new DialogViewPagerAdapter(getChildFragmentManager(), dialogListener, context));
         viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.updateWidget();
 
         return builder.create();
     }

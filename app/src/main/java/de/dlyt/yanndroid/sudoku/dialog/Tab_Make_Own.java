@@ -12,13 +12,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import de.dlyt.yanndroid.oneui.dialog.ProgressDialog;
-import de.dlyt.yanndroid.oneui.sesl.recyclerview.GridLayoutManager;
-import de.dlyt.yanndroid.oneui.view.RecyclerView;
 import de.dlyt.yanndroid.sudoku.R;
 import de.dlyt.yanndroid.sudoku.adapter.SudokuViewAdapter;
 import de.dlyt.yanndroid.sudoku.game.Game;
+import dev.oneuiproject.oneui.dialog.ProgressDialog;
 
 public class Tab_Make_Own extends Fragment {
 
@@ -39,7 +39,7 @@ public class Tab_Make_Own extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ProgressDialog mLoadingDialog = new ProgressDialog(getContext());
-        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_CIRCLE_ONLY);
+        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_CIRCLE);
         mLoadingDialog.setCancelable(false);
 
         Game game = new Game(9);

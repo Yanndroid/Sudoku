@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:alpha="0.9"
     android:background="@drawable/sesl_menu_popup_background"
-    android:backgroundTint="@color/item_background_color"
+    android:backgroundTint="@color/oui_background_color"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="15dp">
@@ -21,31 +21,31 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <de.dlyt.yanndroid.oneui.sesl.widget.ToolbarImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/popup_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/sesl_action_bar_item_background"
             android:padding="10dp"
-            android:src="@drawable/ic_samsung_apps"
+            android:src="@drawable/ic_oui_apps"
             android:tint="@color/cyan" />
 
-        <de.dlyt.yanndroid.oneui.sesl.widget.ToolbarImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/popup_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/sesl_action_bar_item_background"
             android:padding="10dp"
-            android:src="@drawable/ic_samsung_delete"
+            android:src="@drawable/ic_oui_delete_outline"
             android:tint="@color/magenta" />
 
-        <de.dlyt.yanndroid.oneui.sesl.widget.ToolbarImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/popup_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/sesl_action_bar_item_background"
             android:padding="10dp"
-            android:src="@drawable/ic_samsung_light_bulb"
+            android:src="@drawable/ic_oui_tips_outline"
             android:tint="@color/yellow" />
 
     </LinearLayout>

@@ -169,7 +169,8 @@ public class Game {
     }
 
     public void stopTimer() {
-        if (timer != null) timer.cancel();
+        if (timer == null) return;
+        timer.cancel();
         timer = null;
     }
 
@@ -192,7 +193,7 @@ public class Game {
 
     //solver
     public Object makeGameFromEdit() {
-        Object newGame = makeSolutionFromEdit();
+        Object newGame = makeSolutionFromEdit(false);
         if (newGame instanceof Integer) return newGame;
 
         ((Game) newGame).completed = false;
@@ -205,11 +206,11 @@ public class Game {
         return newGame;
     }
 
-    public Object makeSolutionFromEdit() {
+    public Object makeSolutionFromEdit(boolean ignoreMultiple) {
         ArrayList<Field[][]> solutions = new ArrayList<>();
         solveFieldForSolutionGame(cloneFieldArray(this.fields), 0, 0, solutions);
 
-        if (solutions.size() == 1) {
+        if (solutions.size() == 1 || ignoreMultiple) {
             Game solutionGame = this.copy();
 
             solutionGame.edit_mode = false;
