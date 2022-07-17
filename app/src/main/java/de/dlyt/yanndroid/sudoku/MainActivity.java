@@ -181,7 +181,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setSubtitle(CharSequence subtitle) {
         drawerLayout.setExpandedSubtitle(subtitle);
-        drawerLayout.setCollapsedSubtitle(drawerLayout.isExpandable() ? null : subtitle);
+
+        TypedValue outValue = new TypedValue();
+        getResources().getValue(R.dimen.sesl_appbar_height_proportion, outValue, true);
+        drawerLayout.setCollapsedSubtitle(outValue.getFloat() == 0.0 ? subtitle:null);
     }
 
     public void newSudokuDialog(View view) {

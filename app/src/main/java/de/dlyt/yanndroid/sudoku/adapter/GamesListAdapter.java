@@ -18,6 +18,7 @@ import java.util.List;
 import de.dlyt.yanndroid.sudoku.MainActivity;
 import de.dlyt.yanndroid.sudoku.R;
 import de.dlyt.yanndroid.sudoku.game.Game;
+import dev.oneuiproject.oneui.utils.DialogUtils;
 
 public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.ViewHolder> {
     private List<Game> games;
@@ -113,7 +114,7 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.View
                     .show();
         });
         holder.item_delete.setOnClickListener(v -> {
-            new AlertDialog.Builder(context)
+            AlertDialog deleteDialog = new AlertDialog.Builder(context)
                     .setTitle(game.getName())
                     .setMessage(R.string.delete_sudoku)
                     .setNegativeButton(R.string.cancel, null)
@@ -123,8 +124,8 @@ public class GamesListAdapter extends RecyclerView.Adapter<GamesListAdapter.View
                         notifyItemRangeChanged(position, games.size());*/
                         notifyChanged();
                         gamesListListener.onGameDeleted(game);
-                    })
-                    .show();
+                    }).show();
+            DialogUtils.setDialogButtonTextColor(deleteDialog, AlertDialog.BUTTON_POSITIVE, context.getColor(R.color.oui_functional_red_color));
         });
 
         holder.itemView.setOnClickListener(v -> ((MainActivity) context).loadGame(games.get(holder.getAdapterPosition())));
