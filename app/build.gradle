@@ -3,15 +3,15 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 35
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "de.dlyt.yanndroid.sudoku"
         minSdkVersion 26
-        targetSdkVersion 32
-        versionCode 9
-        versionName "3.0.1"
+        targetSdkVersion 35
+        versionCode 10
+        versionName "3.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -26,6 +26,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'de.dlyt.yanndroid.sudoku'
 }
 
 configurations.all {
@@ -45,9 +46,9 @@ dependencies {
     implementation 'io.github.oneuiproject.sesl:material:1.2.1'
     implementation 'io.github.oneuiproject.sesl:preference:1.1.0'
     implementation 'io.github.oneuiproject.sesl:recyclerview:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation "androidx.asynclayoutinflater:asynclayoutinflater:1.0.0"
-    implementation 'com.google.android.play:app-update:2.0.0'
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.android.play:app-update:2.1.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
 }

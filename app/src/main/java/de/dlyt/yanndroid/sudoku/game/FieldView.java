@@ -27,6 +27,7 @@ import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 
 import com.google.android.material.textview.MaterialTextView;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import de.dlyt.yanndroid.sudoku.R;
@@ -66,7 +67,9 @@ public class FieldView extends LinearLayout {
     }
 
     private void setValue(Integer value) {
-        if (value == field.getValue()) return;
+        if (game.isCompleted()) return;
+        if (Objects.equals(value, field.getValue())) return;
+
         if (!field.isHint() && !game.isEditMode()) game.addFieldToHistory(field, position);
 
         field.setValue(value);
@@ -76,9 +79,13 @@ public class FieldView extends LinearLayout {
         fieldViewValue.setVisibility(value == null ? GONE : VISIBLE);
         setBackground(false);
         if (value != null && !game.isEditMode()) checkForCompletion();
+
+        updateNotes();
     }
 
     private void setHint() {
+        if (game.isCompleted()) return;
+
         field.setHint();
         setEnabled(false);
         fieldViewValue.setTextColor(sharedPreferences.getInt("hint_color", context.getColor(R.color.blue)));
@@ -87,7 +94,9 @@ public class FieldView extends LinearLayout {
     }
 
     private void updateNotes() {
-        fieldViewNotes.setVisibility(field.getNotes().size() == 0 ? GONE : VISIBLE);
+        if (game.isCompleted()) return;
+
+        fieldViewNotes.setVisibility(field.getNotes().isEmpty() || field.getValue() != null ? GONE : VISIBLE);
         fieldViewNotes.setText(field.getNotes().stream().map(Object::toString).collect(Collectors.joining()));
 
         if (row == size - 1 && (column == 0 || column == size - 1))
@@ -132,7 +141,7 @@ public class FieldView extends LinearLayout {
             propertiesListView.addLine(context.getString(R.string.name), game.getName());
             propertiesListView.addLine(context.getString(R.string.time), game.getTimeString());
             propertiesListView.addLine(context.getString(R.string.size), game.getSize() + "×" + game.getSize());
-            propertiesListView.addLine(context.getString(R.string.difficulty), String.valueOf(game.getDifficulty()));
+            propertiesListView.addLine(context.getString(R.string.difficulty), game.getDifficulty() < 0 ? "max" : String.valueOf(game.getDifficulty()));
             int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 26, getResources().getDisplayMetrics());
             propertiesListView.setPadding(padding, 0, padding, 0);
             new AlertDialog.Builder(context)
@@ -205,6 +214,8 @@ public class FieldView extends LinearLayout {
     }
 
     private void showMainPopup() {
+        if (game.isCompleted()) return;
+
         View popupView = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.popup_number_input, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         popupWindow.setAnimationStyle(R.style.MenuPopupAnimStyle);
@@ -279,6 +290,8 @@ public class FieldView extends LinearLayout {
     }
 
     private void showNotesPopup() {
+        if (game.isCompleted()) return;
+
         View popupView = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.popup_notes_input, null);
         final PopupWindow popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         popupWindow.setAnimationStyle(R.style.MenuPopupAnimStyle);
